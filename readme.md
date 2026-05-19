@@ -6,7 +6,7 @@
 ## Año
     2026
 ## Autor/es
-- Apellido y nombre: Borora Agustina, Larrea Zaira.
+- Apellido y Nombre: Borora, Agustina; Larrea, Zaira.
 - Email: -44679806@populorumjujuy.ar
          -46067685@populorumjujuy.ar
 - GitHub:Agustina-Borora, ZairaLarrea
