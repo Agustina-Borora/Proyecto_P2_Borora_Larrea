@@ -21,6 +21,8 @@ Actualmente el registro de pacientes se registra de forma manual, este método o
 ## Objetivo General
 Desarrollar un sistema de gestión interna para el laboratorio bioquímico que optimice el registro de pacientes, la asignación de órdenes de análisis por fecha y la carga de informes de resultados, reemplazando el flujo de trabajo manual basado en plantillas de Microsoft Word y almacenamiento en carpetas físicas. El sistema centralizará la información para permitir búsquedas históricas ágiles y agilizar la entrega de resultados.
 
+## Objetivo Gral Alternativo
+Desarrollar un sistema multiplataforma para la gestión integral de un laboratorio clínico, que permita administrar de manera eficiente el registro de pacientes, la carga y seguimiento de análisis, la emisión de resultados y el control de la información médica, optimizando los procesos administrativos y operativos, mejorando la seguridad y disponibilidad de los datos, y contribuyendo a una atención más ágil y precisa.
 
 ## Objetivos Específicos
 - Centralizar los datos: Registrar pacientes con sus datos demográficos y de contacto esenciales (incluyendo teléfono y mail para envíos digitales).
