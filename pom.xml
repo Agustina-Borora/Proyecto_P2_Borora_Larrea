@@ -11,26 +11,22 @@
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
  
-        <!-- Clase que tiene el main(), ajustala cuando la crees -->
         <mainClass>com.mycompany.laboratorio.EscritorioAppLauncher</mainClass>
     </properties>
  
     <dependencies>
-        <!-- FlatLaf: look and feel -->
         <dependency>
             <groupId>com.formdev</groupId>
             <artifactId>flatlaf</artifactId>
             <version>3.7.1</version>
         </dependency>
  
-        <!-- Conector MySQL (JDBC) -->
         <dependency>
             <groupId>com.mysql</groupId>
             <artifactId>mysql-connector-j</artifactId>
             <version>9.0.0</version>
         </dependency>
  
-        <!-- Selector de fechas (rango desde/hasta, fecha de nacimiento, etc.) -->
         <dependency>
             <groupId>com.github.lgooddatepicker</groupId>
             <artifactId>LGoodDatePicker</artifactId>
@@ -40,7 +36,6 @@
  
     <build>
         <plugins>
-            <!-- Le dice a Maven cual es la clase main al ejecutar/empaquetar -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jar-plugin</artifactId>
@@ -54,8 +49,6 @@
                 </configuration>
             </plugin>
  
-            <!-- Empaqueta las dependencias (FlatLaf, MySQL) DENTRO del jar final,
-                 asi el .jar que generes corre en cualquier PC sin configurar nada -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-assembly-plugin</artifactId>
