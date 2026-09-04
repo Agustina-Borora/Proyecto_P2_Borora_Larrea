@@ -1,0 +1,15 @@
+# Build de NetBeans/Ant (se regenera con "ant clean jar")
+/build/
+/dist/
+
+# Archivos locales de NetBeans que no conviene versionar
+nbproject/private/
+nbproject/Makefile-*.mk
+nbproject/Package-*.bash
+
+# Compilados sueltos
+*.class
+
+# Sistema
+Thumbs.db
+.DS_Store

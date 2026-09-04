@@ -1,0 +1,162 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package panels;
+
+import com.formdev.flatlaf.FlatClientProperties;
+import java.awt.Font;
+import java.util.ArrayList;
+import java.util.List;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
+import javax.swing.text.AbstractDocument;
+
+/**
+ * Componente de buscador reutilizable: un campo de texto con ícono/estilo de
+ * búsqueda que se embebe en las pantallas de Pacientes, Registros y
+ * Registrar Resultados. No filtra nada por sí mismo; cada vez que el texto
+ * cambia (mientras se escribe) o se presiona Enter, avisa a los
+ * {@link BusquedaListener} registrados para que la pantalla contenedora
+ * filtre su propia tabla.
+ */
+public class Busqueda extends javax.swing.JPanel {
+
+    /**
+     * Se dispara cada vez que cambia el texto del buscador (a medida que se
+     * escribe) o al presionar Enter, para que la pantalla que contiene este
+     * panel (Pacientes, Registros, etc.) filtre su tabla.
+     */
+    public interface BusquedaListener {
+        void onBuscar(String texto);
+    }
+
+    private final List<BusquedaListener> listeners = new ArrayList<>();
+
+    /**
+     * Arma el panel, aplica el estilo visual del campo de búsqueda y deja
+     * instalado el filtro {@link FiltroLetraONumero} más el listener que
+     * dispara {@link #avisarBusqueda()} en cada cambio de texto.
+     */
+ public Busqueda() {
+        initComponents();
+        aplicarEstiloBuscador();
+
+        // Nada de símbolos, y una vez que arrancás con letra el resto tiene
+        // que seguir siendo letra (para buscar por nombre), y si arrancás
+        // con número el resto tiene que seguir siendo número (para buscar
+        // por DNI). Se valida acá, en el buscador compartido, así que
+        // aplica solo a Pacientes y a Registros por igual. El filtro es
+        // FiltroLetraONumero (mismo paquete), compartido con Solicitud de
+        // Análisis para el campo Codigo/Nombre.
+        ((AbstractDocument) jTextField1.getDocument()).setDocumentFilter(new FiltroLetraONumero());
+
+        jTextField1.getDocument().addDocumentListener(new DocumentListener() {
+            @Override
+            public void insertUpdate(DocumentEvent e) { avisarBusqueda(); }
+            @Override
+            public void removeUpdate(DocumentEvent e) { avisarBusqueda(); }
+            @Override
+            public void changedUpdate(DocumentEvent e) { avisarBusqueda(); }
+        });
+    }
+
+    // El filtro de validación (FiltroLetraONumero) vive ahora en su propio
+    // archivo, panels/FiltroLetraONumero.java, para poder reusarlo también
+    // en Solicitud de Análisis.
+
+    /**
+     * Registra un listener que va a recibir el texto de búsqueda cada vez
+     * que cambie. Lo usan las pantallas que contienen este panel (Pacientes,
+     * Registros, Registrar Resultados) para filtrar su propia tabla.
+     */
+    public void addBusquedaListener(BusquedaListener listener) {
+        listeners.add(listener);
+    }
+
+    /**
+     * Notifica a todos los listeners registrados el texto actual del campo
+     * de búsqueda.
+     */
+    private void avisarBusqueda() {
+        String texto = jTextField1.getText();
+        for (BusquedaListener listener : listeners) {
+            listener.onBuscar(texto);
+        }
+    }
+
+    /**
+     * Da estilo FlatLaf al campo de texto: bordes redondeados, color de foco
+     * verde corporativo, texto de ayuda "Buscar..." y botón de limpiar (X).
+     */
+    private void aplicarEstiloBuscador() {
+        // 1. Bordes redondeados y margen interno para que el texto respire
+        jTextField1.putClientProperty(FlatClientProperties.STYLE, 
+            "arc: 12; " +                   // Redondeado suave en las esquinas
+            "borderColor: #DCE1E6; " +     // Gris claro para el borde
+            "focusedBorderColor: #1E513B; "+ // Verde corporativo cuando está seleccionado
+            "borderWidth: 1; " +            // Grosor fino
+            "margin: 4,10,4,10; " +         // Margen interno (arriba, izquierda, abajo, derecha)
+            "background: #FFFFFF"           // Fondo blanco limpio
+        );
+
+        // 2. Texto de ayuda (Placeholder) cuando esté vacío
+        jTextField1.putClientProperty(FlatClientProperties.PLACEHOLDER_TEXT, " Buscar...");
+
+        // 3. Botón para limpiar texto (la famosa "X" que aparece al escribir)
+        jTextField1.putClientProperty(FlatClientProperties.TEXT_FIELD_SHOW_CLEAR_BUTTON, true);
+
+        // 4. Fuente limpia y clara
+        jTextField1.setFont(new Font("Segoe UI", Font.PLAIN, 13));
+    }
+
+    /**
+     * This method is called from within the constructor to initialize the form.
+     * WARNING: Do NOT modify this code. The content of this method is always
+     * regenerated by the Form Editor.
+     */
+    @SuppressWarnings("unchecked")
+    // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
+    private void initComponents() {
+
+        jTextField1 = new javax.swing.JTextField();
+
+        setBackground(new java.awt.Color(255, 255, 255));
+
+        jTextField1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jTextField1ActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
+        this.setLayout(layout);
+        layout.setHorizontalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(layout.createSequentialGroup()
+                .addGap(0, 0, 0)
+                .addComponent(jTextField1, javax.swing.GroupLayout.DEFAULT_SIZE, 977, Short.MAX_VALUE))
+        );
+        layout.setVerticalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(layout.createSequentialGroup()
+                .addGap(0, 0, 0)
+                .addComponent(jTextField1, javax.swing.GroupLayout.DEFAULT_SIZE, 44, Short.MAX_VALUE)
+                .addGap(0, 0, 0))
+        );
+    }// </editor-fold>//GEN-END:initComponents
+
+    /**
+     * Al presionar Enter en el campo, dispara la búsqueda inmediatamente
+     * (además del aviso que ya ocurre en cada tecleo por el DocumentListener).
+     */
+    private void jTextField1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField1ActionPerformed
+        avisarBusqueda();
+    }//GEN-LAST:event_jTextField1ActionPerformed
+
+
+    // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JTextField jTextField1;
+    // End of variables declaration//GEN-END:variables
+}
