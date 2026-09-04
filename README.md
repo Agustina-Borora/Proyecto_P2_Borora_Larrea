@@ -144,7 +144,7 @@ La clase de entrada es `formulariosPrincipales.Login`.
 
 ## Autores
 
-- Agus (Agustina Borora)
-- Larrea
+- Borora, Melani Agustina
+- Larrea, Zaira Cristina
 
 Trabajo práctico para la materia Práctica II.
