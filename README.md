@@ -147,4 +147,4 @@ La clase de entrada es `formulariosPrincipales.Login`.
 - Borora, Melani Agustina
 - Larrea, Zaira Cristina
 
-Trabajo práctico para la materia Práctica II.
+Para la Unidad Curricular de Práctica Profesionalizante II de la Carrera "Tecnicatura Superior en Desarrollo de Software".
