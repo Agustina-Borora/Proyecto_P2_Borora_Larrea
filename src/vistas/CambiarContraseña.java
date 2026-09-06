@@ -29,6 +29,22 @@ package vistas;
 public class CambiarContraseña extends javax.swing.JPanel {
 
     /**
+     * Se dispara cuando el usuario confirma una contraseña nueva (los dos
+     * campos coinciden). Quien arme esta pantalla (por ejemplo
+     * {@link RecuperarContrasenaFrame}) se suscribe para persistirla vía
+     * {@link controlador.PasswordController#cambiarPassword}.
+     */
+    public interface ContrasenaGuardadaListener {
+        void onContrasenaElegida(String nuevaPassword);
+    }
+
+    private final java.util.List<ContrasenaGuardadaListener> listenersGuardado = new java.util.ArrayList<>();
+
+    public void addContrasenaGuardadaListener(ContrasenaGuardadaListener listener) {
+        listenersGuardado.add(listener);
+    }
+
+    /**
      * Creates new form CambiarContraseña
      */
     public CambiarContraseña() {
@@ -164,9 +180,31 @@ public class CambiarContraseña extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        // Pendiente: validar que ambos campos coincidan y persistir la
-        // nueva contraseña una vez que esta pantalla se conecte a la base
-        // de datos. Por el momento, sin acción.
+        // Valida que las dos casillas coincidan acá mismo (es una regla de
+        // la Vista, no de negocio); el largo mínimo y el guardado en la
+        // base los valida controlador.PasswordController, a través de
+        // quien esté escuchando ContrasenaGuardadaListener.
+        char[] nueva = txtNuevaContrasena.getPassword();
+        char[] confirmar = txtConfirmarContrasena.getPassword();
+
+        if (nueva.length == 0 || confirmar.length == 0) {
+            javax.swing.JOptionPane.showMessageDialog(this,
+                    "Completá los dos campos de contraseña.",
+                    "Faltan datos", javax.swing.JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        if (!java.util.Arrays.equals(nueva, confirmar)) {
+            javax.swing.JOptionPane.showMessageDialog(this,
+                    "Las contraseñas no coinciden.",
+                    "Contraseñas distintas", javax.swing.JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        String nuevaPassword = new String(nueva);
+        for (ContrasenaGuardadaListener listener : listenersGuardado) {
+            listener.onContrasenaElegida(nuevaPassword);
+        }
     }//GEN-LAST:event_jButton1ActionPerformed
 
 

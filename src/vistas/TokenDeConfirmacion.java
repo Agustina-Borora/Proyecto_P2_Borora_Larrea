@@ -36,12 +36,29 @@ public class TokenDeConfirmacion extends javax.swing.JPanel {
     private static final String TEXTO_PLACEHOLDER_DIGITO = "—";
 
     /**
+     * Se dispara cuando el usuario completa los 6 dígitos y hace click en
+     * "Verificar Codigo". Quien arme esta pantalla (por ejemplo
+     * {@link RecuperarContrasenaFrame}) se suscribe para validar el código
+     * vía {@link controlador.PasswordController#verificarCodigo}.
+     */
+    public interface CodigoVerificadoListener {
+        void onCodigoIngresado(String codigo);
+    }
+
+    private final java.util.List<CodigoVerificadoListener> listenersCodigo = new java.util.ArrayList<>();
+
+    public void addCodigoVerificadoListener(CodigoVerificadoListener listener) {
+        listenersCodigo.add(listener);
+    }
+
+    /**
      * Creates new form TokenDeConfirmacion
      */
     public TokenDeConfirmacion() {
         initComponents();
         aplicarPlaceholders();
         aplicarEstiloDigitos();
+        aplicarFiltroDigitos();
     }
 
     /**
@@ -83,6 +100,108 @@ public class TokenDeConfirmacion extends javax.swing.JPanel {
         for (javax.swing.JTextField casilla : casillasDigito) {
             casilla.setBorder(margenDigito);
             casilla.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        }
+    }
+
+    /**
+     * Le pone a cada casilla del código un {@link javax.swing.text.DocumentFilter}
+     * que solo deja escribir un dígito numérico (nada de letras, símbolos ni
+     * más de un carácter), que pasa el foco a la siguiente casilla apenas se
+     * completa una, y que vuelve a la anterior cuando se borra el dígito con
+     * Backspace/Delete — así se puede cargar y corregir el código corrido,
+     * sin tocar el mouse ni el Tab.
+     *
+     * El filtro de documento por sí solo no alcanza para una casilla que YA
+     * está vacía: ahí Backspace no dispara ningún cambio en el documento
+     * (no hay nada que borrar), así que además se engancha un
+     * {@link java.awt.event.KeyListener} en cada casilla para ese caso
+     * puntual: Backspace sobre una casilla vacía pasa el foco para atrás
+     * igual, sin que haga falta mover el cursor a mano primero.
+     */
+    private void aplicarFiltroDigitos() {
+        javax.swing.JTextField[] casillasDigito = {
+            txtDigito1, txtDigito2, txtDigito3, txtDigito4, txtDigito5, txtDigito6
+        };
+        for (int i = 0; i < casillasDigito.length; i++) {
+            final javax.swing.JTextField casillaActual = casillasDigito[i];
+            final javax.swing.JTextField anteriorCasilla = (i - 1 >= 0) ? casillasDigito[i - 1] : null;
+            javax.swing.JTextField siguienteCasilla = (i + 1 < casillasDigito.length) ? casillasDigito[i + 1] : null;
+
+            ((javax.swing.text.AbstractDocument) casillaActual.getDocument())
+                    .setDocumentFilter(new FiltroUnDigito(anteriorCasilla, siguienteCasilla));
+
+            casillaActual.addKeyListener(new java.awt.event.KeyAdapter() {
+                @Override
+                public void keyPressed(java.awt.event.KeyEvent evt) {
+                    if (evt.getKeyCode() == java.awt.event.KeyEvent.VK_BACK_SPACE
+                            && casillaActual.getText().isEmpty() && anteriorCasilla != null) {
+                        anteriorCasilla.requestFocusInWindow();
+                        anteriorCasilla.setCaretPosition(anteriorCasilla.getText().length());
+                    }
+                }
+            });
+        }
+    }
+
+    /**
+     * Filtro de documento para una casilla de código: descarta cualquier
+     * carácter que no sea un dígito (0-9), deja como máximo un dígito
+     * cargado a la vez (si ya había uno, el nuevo lo reemplaza), pasa el
+     * foco a la casilla siguiente al completarse, y a la anterior cuando el
+     * usuario borra el dígito y la casilla queda vacía de nuevo.
+     */
+    private static class FiltroUnDigito extends javax.swing.text.DocumentFilter {
+
+        /** Casilla a la que se vuelve al borrar el dígito de esta, o null si es la primera. */
+        private final javax.swing.JTextField anteriorCasilla;
+        /** Casilla a la que se pasa el foco al completar esta, o null si es la última. */
+        private final javax.swing.JTextField siguienteCasilla;
+
+        FiltroUnDigito(javax.swing.JTextField anteriorCasilla, javax.swing.JTextField siguienteCasilla) {
+            this.anteriorCasilla = anteriorCasilla;
+            this.siguienteCasilla = siguienteCasilla;
+        }
+
+        @Override
+        public void insertString(FilterBypass fb, int offset, String texto, javax.swing.text.AttributeSet atributos)
+                throws javax.swing.text.BadLocationException {
+            reemplazarPorDigito(fb, texto, atributos);
+        }
+
+        @Override
+        public void replace(FilterBypass fb, int offset, int length, String texto, javax.swing.text.AttributeSet atributos)
+                throws javax.swing.text.BadLocationException {
+            reemplazarPorDigito(fb, texto, atributos);
+        }
+
+        @Override
+        public void remove(FilterBypass fb, int offset, int length) throws javax.swing.text.BadLocationException {
+            super.remove(fb, offset, length);
+            // Backspace/Delete dejaron la casilla vacía: seguimos corrigiendo hacia atrás.
+            if (fb.getDocument().getLength() == 0 && anteriorCasilla != null) {
+                anteriorCasilla.requestFocusInWindow();
+                // Sin esto el cursor queda al INICIO de la casilla anterior (posición 0),
+                // y un Backspace ahí no borra nada por no haber texto antes del cursor:
+                // el usuario tenía que apretar Backspace dos veces por casilla para
+                // seguir borrando hacia atrás. Lo mandamos al final del dígito para que
+                // el siguiente Backspace sí lo borre y siga encadenando hacia atrás.
+                anteriorCasilla.setCaretPosition(anteriorCasilla.getText().length());
+            }
+        }
+
+        private void reemplazarPorDigito(FilterBypass fb, String texto, javax.swing.text.AttributeSet atributos)
+                throws javax.swing.text.BadLocationException {
+            String soloDigitos = texto == null ? "" : texto.replaceAll("[^0-9]", "");
+            if (soloDigitos.isEmpty()) {
+                // No había ningún dígito en lo tipeado/pegado (letras, símbolos, etc.): se ignora.
+                return;
+            }
+            // La casilla es de un solo dígito: si se pega texto más largo, se queda con el último.
+            String digito = soloDigitos.substring(soloDigitos.length() - 1);
+            super.replace(fb, 0, fb.getDocument().getLength(), digito, atributos);
+            if (siguienteCasilla != null) {
+                siguienteCasilla.requestFocusInWindow();
+            }
         }
     }
 
@@ -225,9 +344,24 @@ public class TokenDeConfirmacion extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        // Pendiente: leer los seis dígitos ingresados y verificar el código
-        // contra la base de datos una vez que esta pantalla esté conectada.
-        // Por el momento, sin acción.
+        // Concatena los 6 dígitos en el orden visual (izquierda a derecha).
+        // getText() acá trae solo lo tipeado: el placeholder ("—") es un
+        // dibujo aparte en paintComponent(), nunca queda en el valor real
+        // del campo (ver interfaz.JTextFieldRedondeado).
+        String codigo = txtDigito1.getText().trim() + txtDigito2.getText().trim()
+                + txtDigito3.getText().trim() + txtDigito4.getText().trim()
+                + txtDigito5.getText().trim() + txtDigito6.getText().trim();
+
+        if (codigo.length() != 6) {
+            javax.swing.JOptionPane.showMessageDialog(this,
+                    "Completá los 6 dígitos del código.",
+                    "Código incompleto", javax.swing.JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        for (CodigoVerificadoListener listener : listenersCodigo) {
+            listener.onCodigoIngresado(codigo);
+        }
     }//GEN-LAST:event_jButton1ActionPerformed
 
 

@@ -10,6 +10,10 @@ nbproject/Package-*.bash
 # Compilados sueltos
 *.class
 
+# Credenciales SMTP para el envío de mails (recuperar contraseña).
+# email.properties.example SÍ se versiona, como plantilla.
+email.properties
+
 # Sistema
 Thumbs.db
 .DS_Store

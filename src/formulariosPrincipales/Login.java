@@ -14,10 +14,20 @@ public class Login extends javax.swing.JFrame {
      */
     public Login() {
         initComponents(); // Inicializa los componentes creados por el diseñador Swing
-        
+
         this.setSize(900, 550);            // Tamaño fijo de la ventana
         this.setLocationRelativeTo(null);   // Centra la ventana en la pantalla
         this.setResizable(false);           // Impide que el usuario cambie el tamaño
+
+        // "¿Olvidaste tu contraseña?": abre el flujo de recuperación
+        // (vistas.RecuperarContrasenaFrame) en una ventana aparte, sin
+        // tocar esta pantalla de Login.
+        jLabel5.addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                new vistas.RecuperarContrasenaFrame().setVisible(true);
+            }
+        });
     }
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
