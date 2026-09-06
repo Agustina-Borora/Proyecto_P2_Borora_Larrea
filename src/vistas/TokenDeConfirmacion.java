@@ -105,8 +105,8 @@ public class TokenDeConfirmacion extends javax.swing.JPanel {
         txtDigito4 = new interfaz.JTextFieldRedondeado();
         txtDigito2 = new interfaz.JTextFieldRedondeado();
         txtDigito1 = new interfaz.JTextFieldRedondeado();
-        txtDigito5 = new interfaz.JTextFieldRedondeado();
         txtDigito6 = new interfaz.JTextFieldRedondeado();
+        txtDigito5 = new interfaz.JTextFieldRedondeado();
 
         setLayout(new java.awt.GridLayout(1, 0));
 
@@ -164,11 +164,11 @@ public class TokenDeConfirmacion extends javax.swing.JPanel {
         txtDigito1.setBackground(new java.awt.Color(180, 195, 185));
         txtDigito1.setFont(new java.awt.Font("SansSerif", 1, 12)); // NOI18N
 
-        txtDigito5.setBackground(new java.awt.Color(180, 195, 185));
-        txtDigito5.setFont(new java.awt.Font("SansSerif", 1, 12)); // NOI18N
-
         txtDigito6.setBackground(new java.awt.Color(180, 195, 185));
         txtDigito6.setFont(new java.awt.Font("SansSerif", 1, 12)); // NOI18N
+
+        txtDigito5.setBackground(new java.awt.Color(180, 195, 185));
+        txtDigito5.setFont(new java.awt.Font("SansSerif", 1, 12)); // NOI18N
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -210,12 +210,12 @@ public class TokenDeConfirmacion extends javax.swing.JPanel {
                 .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 16, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(28, 28, 28)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(txtDigito4, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(txtDigito6, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(txtDigito5, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(txtDigito1, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(txtDigito4, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(txtDigito3, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(txtDigito2, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(txtDigito6, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(txtDigito1, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(42, 42, 42)
                 .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 49, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(180, Short.MAX_VALUE))
