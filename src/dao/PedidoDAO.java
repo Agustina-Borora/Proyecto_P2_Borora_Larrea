@@ -8,21 +8,14 @@ import java.sql.Statement;
 import modelo.PedidoCreado;
 
 /**
- * DAO para `pedidos` y `pedido_analisis`, usado por "Generar Orden" en
- * Nuevo Análisis. Los montos (subtotal/total_*) quedan en 0 por ahora: no
- * hay todavía una fuente de precios por análisis (analisis_tipos.precio_base
- * se crea en 0 para lo que viene del nomenclador, ver AnalisisTipoDAO), así
- * que armar una facturación real es una tarea aparte, pendiente.
+ * DAO para `pedidos` y `pedido_analisis`, usado por "Generar Orden" en Nuevo Análisis.
  */
 public class PedidoDAO {
 
     /**
-     * Crea el pedido y le arma un numero_pedido legible ("PED-000123") a
-     * partir del id_pedido generado, en un segundo UPDATE porque el número
-     * depende de un id que todavía no existe al momento del INSERT.
-     * numero_pedido es NOT NULL sin default, así que el INSERT igual necesita
-     * mandarle algo: va un valor temporal único, que el UPDATE de abajo pisa
-     * enseguida con el número final.
+     * Crea el pedido y le arma un numero_pedido legible ("PED-000123") a partir del id_pedido
+     * generado, en un segundo UPDATE porque el número depende de un id que todavía no existe al
+     * momento del INSERT.
      */
     public static PedidoCreado crearPedido(Connection con, int idPaciente, Integer idMedico, int idRegistradoPor) {
         String numeroTemporal = "TMP-" + System.currentTimeMillis();
@@ -70,7 +63,9 @@ public class PedidoDAO {
         return new PedidoCreado(idPedido, numeroPedido);
     }
 
-    /** Agrega una fila a pedido_analisis para uno de los análisis elegidos en la orden. */
+    /**
+     * Agrega una fila a pedido_analisis para uno de los análisis elegidos en la orden.
+     */
     public static boolean agregarAnalisis(Connection con, int idPedido, int idAnalisisTipo) {
         String sql = "INSERT INTO pedido_analisis (id_pedido, id_analisis_tipo, precio_aplicado, estado_analisis, created_at) "
                 + "VALUES (?, ?, 0, 'pendiente', NOW())";

@@ -1,0 +1,8 @@
+# Copia este archivo como "email.properties" (sin el .example) y completa
+# tus propios datos. "email.properties" esta excluido de git a proposito
+# (ver .gitignore) porque contiene una credencial real.
+smtp.host=smtp.gmail.com
+smtp.port=587
+smtp.user=tu_correo@gmail.com
+smtp.password=tu_contrasena_de_aplicacion
+smtp.from=tu_correo@gmail.com

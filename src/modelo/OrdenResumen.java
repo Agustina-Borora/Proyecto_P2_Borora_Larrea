@@ -4,8 +4,6 @@ import java.util.Date;
 
 /**
  * POJO para una fila de la tabla "Últimas Órdenes" del Escritorio.
- * No es una tabla real de la base: sale de un JOIN entre pedidos,
- * pacientes, pedido_analisis, analisis_tipos y envios (ver EscritorioDAO).
  */
 public class OrdenResumen {
 
@@ -20,10 +18,7 @@ public class OrdenResumen {
     private int idAnalisisTipo;
 
     /**
-     * Id real de la fila en pedido_analisis (el examen puntual dentro de
-     * la orden). Lo necesita Registrar Resultados para saber sobre qué
-     * fila guardar/leer resultados; EscritorioDAO no lo carga (se queda
-     * en 0), no lo usa.
+     * Id real de la fila en pedido_analisis (el examen puntual dentro de la orden).
      */
     public int getIdPedidoAnalisis() {
         return idPedidoAnalisis;
@@ -33,7 +28,9 @@ public class OrdenResumen {
         this.idPedidoAnalisis = idPedidoAnalisis;
     }
 
-    /** Id del analisis_tipo de este examen (para buscar sus parámetros). */
+    /**
+     * Id del analisis_tipo de este examen (para buscar sus parámetros).
+     */
     public int getIdAnalisisTipo() {
         return idAnalisisTipo;
     }

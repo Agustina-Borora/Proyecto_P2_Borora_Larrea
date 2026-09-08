@@ -8,19 +8,18 @@ import java.sql.Statement;
 import modelo.Prestacion;
 
 /**
- * El nomenclador (catálogo de códigos importado del Excel) y analisis_tipos
- * (lo que realmente usa pedido_analisis) son dos tablas sin relación directa
- * -- ver la revisión de 3FN que hicimos antes. Este DAO es el puente: busca
- * un analisis_tipo por código o por nombre y, si todavía no existe, lo crea
- * a partir de la prestación elegida del nomenclador (precio en 0 y en una
- * categoría "Sin Clasificar" mientras no haya una asignación real de precio
- * ni de categoría -- eso queda para más adelante).
+ * El nomenclador (catálogo de códigos importado del Excel) y analisis_tipos (lo que realmente
+ * usa pedido_analisis) son dos tablas sin relación directa -- ver la revisión de 3FN que
+ * hicimos antes.
  */
 public class AnalisisTipoDAO {
 
     private static final String CATEGORIA_SIN_CLASIFICAR = "Sin Clasificar (Nomenclador)";
 
-    /** Busca el analisis_tipo que corresponde a esta prestación del nomenclador, creándolo si hace falta. */
+    /**
+     * Busca el analisis_tipo que corresponde a esta prestación del nomenclador, creándolo si hace
+     * falta.
+     */
     public static Integer obtenerOCrearDesdeNomenclador(Connection con, Prestacion prestacion) {
         Integer idPorCodigo = buscarPorCodigo(con, prestacion.getCodigo());
         if (idPorCodigo != null) {
@@ -112,7 +111,6 @@ public class AnalisisTipoDAO {
                 siguienteOrden = rs.getInt("siguiente");
             }
         } catch (SQLException e) {
-            // si falla el cálculo del orden seguimos con 1: no es crítico para poder crear la categoría
         }
 
         String sqlInsert = "INSERT INTO categorias_analisis (nombre_categoria, orden_categoria) VALUES (?, ?)";

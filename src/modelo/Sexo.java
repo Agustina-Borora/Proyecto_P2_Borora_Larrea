@@ -2,8 +2,6 @@ package modelo;
 
 /**
  * Modelo (POJO) para la tabla de referencia `sexos` (id_sexo, nombre_sexo).
- * Se usa para poblar el combo "Sexo" de Datos del Paciente con las opciones
- * reales de la base en lugar de los items dummy que traía el editor visual.
  */
 public class Sexo {
 

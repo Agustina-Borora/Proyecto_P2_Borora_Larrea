@@ -5,12 +5,6 @@ import java.util.Date;
 
 /**
  * Modelo (POJO) que representa un paciente del laboratorio.
- * No contiene ninguna lógica de base de datos: eso vive en {@link dao.PacienteDAO}.
- *
- * Los campos reflejan 1 a 1 las columnas reales de la tabla `pacientes`
- * (ver laboratorio.sql). `nombreObraSocial` y `ultimoExamen` NO son columnas
- * de esta tabla: se completan aparte con un JOIN en PacienteDAO.listarTodos()
- * solo para mostrarlos en la grilla, así que no se persisten en insertar()/actualizar().
  */
 public class Paciente {
 
@@ -25,7 +19,6 @@ public class Paciente {
     private String nroAfiliado;
     private int idRegistradoPor;
 
-    // Solo lectura: se completan con JOIN en listarTodos(), no existen en la tabla pacientes.
     private String nombreObraSocial;
     private Date ultimoExamen;
 
@@ -34,7 +27,6 @@ public class Paciente {
 
     /**
      * Calcula la edad actual del paciente a partir de la fecha de nacimiento.
-     * Se usa en TablaPacientes para no tener que guardar la edad en la base de datos.
      */
     public int calcularEdad() {
         if (fechaNacimiento == null) {

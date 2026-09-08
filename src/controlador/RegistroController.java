@@ -6,9 +6,9 @@ import java.util.List;
 import modelo.OrdenResumen;
 
 /**
- * Controlador para la pantalla Registros (registros.TablaRegistros), tanto
- * en su modo normal (todas las órdenes) como en el modo que usa Registrar
- * Resultados (solo las pendientes).
+ * Controlador para la pantalla Registros (vistas.registros.TablaRegistros), tanto en su modo
+ * normal (todas las órdenes) como en el modo que usa Registrar Resultados (solo las
+ * pendientes).
  */
 public final class RegistroController {
 

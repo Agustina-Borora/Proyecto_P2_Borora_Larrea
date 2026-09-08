@@ -8,17 +8,14 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * DAO para `pedido_analito_resultado`: el valor cargado de cada analito,
- * dentro de un pedido_analisis puntual (un examen de una orden). Es el
- * sistema real (ya tenía datos desde el 13/08); reemplaza al
- * dao.ResultadoDAO que armé el 03/09 sin saber que este ya existía.
+ * DAO para `pedido_analito_resultado`: el valor cargado de cada analito, dentro de un
+ * pedido_analisis puntual (un examen de una orden).
  */
 public class PedidoAnalitoResultadoDAO {
 
     /**
-     * Trae los resultados ya guardados de un pedido_analisis, como
-     * id_analito -> valor, para precargar la pantalla si se reabre un
-     * examen que ya tenía algo cargado.
+     * Trae los resultados ya guardados de un pedido_analisis, como id_analito -> valor, para
+     * precargar la pantalla si se reabre un examen que ya tenía algo cargado.
      */
     public static Map<Integer, String> listarResultados(Connection con, int idPedidoAnalisis) {
         Map<Integer, String> resultados = new HashMap<>();
@@ -39,9 +36,7 @@ public class PedidoAnalitoResultadoDAO {
     }
 
     /**
-     * Guarda (o actualiza si ya existía) el valor de un analito para un
-     * pedido_analisis. Necesita la UNIQUE KEY (id_pedido_analisis,
-     * id_analito) que se agregó en migracion_02_completar_analitos.sql.
+     * Guarda (o actualiza si ya existía) el valor de un analito para un pedido_analisis.
      */
     public static boolean guardarResultado(Connection con, int idPedidoAnalisis, int idAnalito, String valor) {
         String sql = "INSERT INTO pedido_analito_resultado (id_pedido_analisis, id_analito, valor_resultado) "
@@ -57,7 +52,9 @@ public class PedidoAnalitoResultadoDAO {
         }
     }
 
-    /** Guarda todos los valores cargados de una sola vez (uno por analito). */
+    /**
+     * Guarda todos los valores cargados de una sola vez (uno por analito).
+     */
     public static boolean guardarTodos(Connection con, int idPedidoAnalisis, Map<Integer, String> valores) {
         boolean todoOk = true;
         for (Map.Entry<Integer, String> entrada : valores.entrySet()) {
@@ -68,7 +65,9 @@ public class PedidoAnalitoResultadoDAO {
         return todoOk;
     }
 
-    /** Cambia el estado del examen (ej. a "completado" cuando ya se cargaron todos los valores). */
+    /**
+     * Cambia el estado del examen (ej. a "completado" cuando ya se cargaron todos los valores).
+     */
     public static boolean actualizarEstado(Connection con, int idPedidoAnalisis, String estado) {
         String sql = "UPDATE pedido_analisis SET estado_analisis = ? WHERE id_pedido_analisis = ?";
         try (PreparedStatement ps = con.prepareStatement(sql)) {

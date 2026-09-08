@@ -9,14 +9,13 @@ import java.util.List;
 import modelo.Sexo;
 
 /**
- * DAO para la tabla de referencia `sexos`. Mismo patrón que los demás DAO:
- * métodos estáticos que reciben la Connection ya abierta.
+ * DAO para la tabla de referencia `sexos`.
  */
 public class SexoDAO {
 
     /**
-     * Devuelve todos los sexos disponibles, ordenados por id_sexo (para que
-     * el orden del combo sea siempre el mismo).
+     * Devuelve todos los sexos disponibles, ordenados por id_sexo (para que el orden del combo sea
+     * siempre el mismo).
      */
     public static List<Sexo> listarTodos(Connection conexion) {
         List<Sexo> sexos = new ArrayList<>();

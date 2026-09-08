@@ -9,17 +9,14 @@ import java.util.List;
 import modelo.OrdenResumen;
 
 /**
- * DAO para la pantalla Registros: lista TODAS las ordenes de analisis (no
- * solo las ultimas N, a diferencia de EscritorioDAO.listarUltimasOrdenes()).
- * Mismo JOIN base que EscritorioDAO, sumando DNI y Cobertura (Obra Social o
- * "Particular") que necesita la tabla de Registros pero el Escritorio no.
+ * DAO para la pantalla Registros: lista TODAS las ordenes de analisis (no solo las ultimas N,
+ * a diferencia de EscritorioDAO.listarUltimasOrdenes()).
  */
 public class RegistroDAO {
 
     /**
-     * SELECT base compartido por listarTodos() y listarPendientes(): trae
-     * numero de orden, paciente, examen, fecha, cobertura, estado y
-     * prioridad del pedido. Cada metodo le agrega su propio WHERE/ORDER BY.
+     * SELECT base compartido por listarTodos() y listarPendientes(): trae numero de orden,
+     * paciente, examen, fecha, cobertura, estado y prioridad del pedido.
      */
     private static final String SELECT_BASE =
             "SELECT pa.id_pedido_analisis, pa.id_analisis_tipo, pe.numero_pedido, p.dni_paciente, p.nya_paciente, at.nombre_analisis, " +
@@ -37,13 +34,10 @@ public class RegistroDAO {
     }
 
     /**
-     * Para la pantalla Registrar Resultados: solo las ordenes que todavia
-     * requieren trabajo (estado_analisis pendiente o en_proceso), sumando
-     * tambien cualquier analisis de un pedido marcado como prioridad_pedido
-     * = 'urgente' que no este completado ni cancelado, para que un pedido
-     * urgente no se pierda de vista aunque su estado puntual sea otro. Las
-     * urgentes se listan primero; el resto, por fecha de carga descendente
-     * (igual que listarTodos()).
+     * Para la pantalla Registrar Resultados: solo las ordenes que todavia requieren trabajo
+     * (estado_analisis pendiente o en_proceso), sumando tambien cualquier analisis de un pedido
+     * marcado como prioridad_pedido = 'urgente' que no este completado ni cancelado, para que un
+     * pedido urgente no se pierda de vista aunque su estado puntual sea otro.
      */
     public static List<OrdenResumen> listarPendientes(Connection conexion) {
         String sql = SELECT_BASE +

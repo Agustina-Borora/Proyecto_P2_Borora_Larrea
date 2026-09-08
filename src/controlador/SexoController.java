@@ -6,11 +6,7 @@ import java.util.List;
 import modelo.Sexo;
 
 /**
- * Controlador para la tabla de referencia `sexos`. Antes, tanto
- * nuevoAnalisis.DatosPersonales como registrarResultados.EncabezadoDatosPaciente
- * tenían cada una su propio método cargarSexos() con el mismo código
- * (conectar, llamar a dao.SexoDAO.listarTodos(), cerrar); ahora las dos
- * llaman a este único método.
+ * Controlador para la tabla de referencia `sexos`.
  */
 public final class SexoController {
 

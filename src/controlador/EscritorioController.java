@@ -8,8 +8,8 @@ import modelo.OrdenResumen;
 
 /**
  * Controlador para la pantalla Escritorio: las 4 tarjetas resumen
- * (formulariosPrincipales.Escritorio) y la tabla de últimas órdenes
- * (escritorio.TablaEscritorio).
+ * (vistas.formulariosPrincipales.Escritorio) y la tabla de últimas órdenes
+ * (vistas.escritorio.TablaEscritorio).
  */
 public final class EscritorioController {
 

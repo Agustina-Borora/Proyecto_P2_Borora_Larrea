@@ -9,15 +9,13 @@ import java.util.List;
 import modelo.Prestacion;
 
 /**
- * DAO para la tabla `nomenclador` (el catálogo cargado desde el Excel que
- * ya se había pasado antes: código, nombre de la prestación y unidades
- * bioquímicas). Se usa desde Solicitud de Análisis para elegir los
- * análisis de una orden por código o por nombre.
+ * DAO para la tabla `nomenclador` (el catálogo cargado desde el Excel que ya se había pasado
+ * antes: código, nombre de la prestación y unidades bioquímicas).
  */
 public class NomencladorDAO {
 
     /**
-     * Busca una prestación por código exacto. Devuelve null si no existe.
+     * Busca una prestación por código exacto.
      */
     public static Prestacion buscarPorCodigo(Connection conexion, int codigo) {
         String sql = "SELECT id_nomenclador, codigo, nombre_prestacion, unidades_bioquimicas " +
@@ -38,9 +36,8 @@ public class NomencladorDAO {
     }
 
     /**
-     * Busca prestaciones cuyo nombre contenga el texto dado (no distingue
-     * mayúsculas/minúsculas por el collation de la base). Puede devolver
-     * más de una coincidencia.
+     * Busca prestaciones cuyo nombre contenga el texto dado (no distingue mayúsculas/minúsculas
+     * por el collation de la base).
      */
     public static List<Prestacion> buscarPorNombre(Connection conexion, String texto) {
         List<Prestacion> resultado = new ArrayList<>();

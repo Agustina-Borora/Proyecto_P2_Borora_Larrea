@@ -9,25 +9,15 @@ import java.util.List;
 import modelo.Parametro;
 
 /**
- * DAO para `analitos` + `valores_referencia`: el sistema real de
- * parámetros de examen (no el que armé el 03/09 sin saber que este ya
- * existía — ver analisis_parametros, dado de baja).
- *
- * `analitos` tiene una columna `tipo_dato` (agregada en
- * migracion_05_tipo_dato_analitos.sql) para los casos donde el resultado
- * es numérico pero el VR no es un rango único (ej. Citomegalovirus
- * IgG/IgM, interpretado por bandas) o todavía no tiene VR cargado (ej.
- * RDW-CV) -- en esos casos no alcanza con mirar si hay valor_min/valor_max.
- * Se reutiliza modelo.Parametro para no tener que tocar la pantalla de
- * carga de resultados (ContenedorExamenes/cargarReultados), que ya
- * trabaja contra esa clase.
+ * DAO para `analitos` + `valores_referencia`: el sistema real de parámetros de examen (no el
+ * que armé el 03/09 sin saber que este ya existía — ver analisis_parametros, dado de baja).
  */
 public class AnalitoDAO {
 
     /**
-     * Trae los analitos de un analisis_tipo con su valor de referencia
-     * aplicable al sexo del paciente (id_sexo del paciente, o id_sexo = 3
-     * "No especificado" para los que no varían por sexo).
+     * Trae los analitos de un analisis_tipo con su valor de referencia aplicable al sexo del
+     * paciente (id_sexo del paciente, o id_sexo = 3 "No especificado" para los que no varían por
+     * sexo).
      */
     public static List<Parametro> listarConReferencia(Connection con, int idAnalisisTipo, int idSexoPaciente) {
         List<Parametro> parametros = new ArrayList<>();

@@ -15,21 +15,7 @@ import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
 /**
- * Envío de emails por SMTP. Se usa para mandar el código de verificación
- * del flujo "olvidé mi contraseña" ({@link controlador.PasswordController}),
- * al email que ya está registrado para cada usuario en {@code usuarios.email_usuario}
- * — no hace falta que el destinatario registre nada nuevo.
- *
- * Requiere agregar la librería JavaMail ({@code javax.mail}, artefacto
- * {@code com.sun.mail:javax.mail:1.6.2} o similar) a las librerías del
- * proyecto en NetBeans; ver README.md, sección "Recuperar contraseña por
- * email".
- *
- * Las credenciales del correo NO están en el código: se leen de un archivo
- * {@code email.properties} en la raíz del proyecto (al lado de build.xml),
- * que cada quien completa en su propia copia y que {@code .gitignore}
- * excluye para que nunca se suba al repositorio. Ver
- * {@code email.properties.example} para el formato esperado.
+ * Envío de emails por SMTP.
  */
 public final class EmailService {
 
@@ -39,8 +25,7 @@ public final class EmailService {
     }
 
     /**
-     * Manda un email de texto plano por SMTP, usando los datos de
-     * {@code email.properties}.
+     * Manda un email de texto plano por SMTP, usando los datos de {@code email.properties}.
      *
      * @param destinatario Email de destino.
      * @param asunto Asunto del mensaje.

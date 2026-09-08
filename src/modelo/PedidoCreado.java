@@ -1,10 +1,9 @@
 package modelo;
 
 /**
- * Resultado de crear un pedido nuevo: el id interno (para poder colgarle
- * los pedido_analisis) y el numero_pedido legible que se le arma después
- * (ver dao.PedidoDAO.crearPedido), que es lo que se muestra en el cartel de
- * "Orden generada".
+ * Resultado de crear un pedido nuevo: el id interno (para poder colgarle los pedido_analisis)
+ * y el numero_pedido legible que se le arma después (ver dao.PedidoDAO.crearPedido), que es lo
+ * que se muestra en el cartel de "Orden generada".
  */
 public class PedidoCreado {
 

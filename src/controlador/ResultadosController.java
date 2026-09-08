@@ -7,16 +7,17 @@ import java.util.Map;
 import modelo.Parametro;
 
 /**
- * Controlador para registrarResultados.cargarReultados: traer los
- * parámetros de un examen (con lo ya guardado, si lo había) y guardar los
- * valores cargados.
+ * Controlador para vistas.registrarResultados.cargarReultados: traer los parámetros de un
+ * examen (con lo ya guardado, si lo había) y guardar los valores cargados.
  */
 public final class ResultadosController {
 
     private ResultadosController() {
     }
 
-    /** Parámetros de un examen junto con los valores ya guardados (si los había), por id_analito. */
+    /**
+     * Parámetros de un examen junto con los valores ya guardados (si los había), por id_analito.
+     */
     public static final class DatosExamen {
         private final List<Parametro> parametros;
         private final Map<Integer, String> valoresGuardados;
@@ -44,8 +45,8 @@ public final class ResultadosController {
     }
 
     /**
-     * Guarda todos los valores cargados y actualiza el estado del examen
-     * (completado si no falta ninguno, en_proceso si falta alguno).
+     * Guarda todos los valores cargados y actualiza el estado del examen (completado si no falta
+     * ninguno, en_proceso si falta alguno).
      */
     public static boolean guardarResultados(Component padre, int idPedidoAnalisis,
             Map<Integer, String> valores, boolean faltaAlguno) {

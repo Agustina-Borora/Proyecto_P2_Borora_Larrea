@@ -8,8 +8,8 @@ import modelo.Prestacion;
 
 /**
  * Controlador para el buscador de Solicitud de Análisis
- * (nuevoAnalisis.SolicitudAnalisis): busca en el nomenclador por código
- * exacto (si el texto tipeado es numérico) o por nombre (si es texto).
+ * (vistas.nuevoAnalisis.SolicitudAnalisis): busca en el nomenclador por código exacto (si el
+ * texto tipeado es numérico) o por nombre (si es texto).
  */
 public final class NomencladorController {
 
@@ -27,7 +27,6 @@ public final class NomencladorController {
                         encontrados.add(porCodigo);
                     }
                 } catch (NumberFormatException ex) {
-                    // codigo demasiado largo para un int: no hay match posible, encontrados queda vacio
                 }
             } else {
                 encontrados.addAll(dao.NomencladorDAO.buscarPorNombre(con, texto));

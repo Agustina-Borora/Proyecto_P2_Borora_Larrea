@@ -3,10 +3,8 @@ package modelo;
 import java.math.BigDecimal;
 
 /**
- * Modelo (POJO) para una fila de la tabla `nomenclador` (el catálogo de
- * prestaciones/códigos que se cargó desde el Excel): código, nombre y
- * unidades bioquímicas. Es lo único que importa de esa tabla para elegir
- * los análisis de una orden (ver dao.NomencladorDAO).
+ * Modelo (POJO) para una fila de la tabla `nomenclador` (el catálogo de prestaciones/códigos
+ * que se cargó desde el Excel): código, nombre y unidades bioquímicas.
  */
 public class Prestacion {
 

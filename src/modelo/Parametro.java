@@ -1,10 +1,8 @@
 package modelo;
 
 /**
- * POJO para una fila de `analisis_parametros`: un renglón de resultado
- * dentro de un analisis_tipo (ej. "Hemoglobina" dentro de "Hemograma
- * completo"). Un analisis_tipo simple como "Creatinina" tiene un solo
- * Parametro asociado.
+ * POJO para una fila de `analisis_parametros`: un renglón de resultado dentro de un
+ * analisis_tipo (ej. "Hemoglobina" dentro de "Hemograma completo").
  */
 public class Parametro {
 
@@ -16,7 +14,7 @@ public class Parametro {
     private String unidad;
     private String valorReferencia;
     private Integer idSexo; // null = aplica a cualquier sexo
-    private String opcionesCualitativo; // opciones separadas por coma, solo si tipoDato = "cualitativo"
+    private String opcionesCualitativo;
 
     public int getIdParametro() {
         return idParametro;

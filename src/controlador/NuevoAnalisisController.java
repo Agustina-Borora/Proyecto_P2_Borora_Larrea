@@ -8,19 +8,16 @@ import modelo.PedidoCreado;
 import modelo.Prestacion;
 
 /**
- * Controlador de la pantalla Nuevo Análisis. Antes, todo esto vivía como el
- * método generarOrden() de formulariosPrincipales.NuevoAnalisis: abría la
- * conexión, manejaba la transacción (commit/rollback) y llamaba a cuatro
- * DAO distintos, todo mezclado con el código de la Vista. Ahora la Vista
- * solo junta los datos que el usuario cargó en pantalla y se los pasa a
- * este Controlador.
+ * Controlador de la pantalla Nuevo Análisis.
  */
 public final class NuevoAnalisisController {
 
     private NuevoAnalisisController() {
     }
 
-    /** Resultado de generar una orden con éxito. */
+    /**
+     * Resultado de generar una orden con éxito.
+     */
     public static final class ResultadoOrden {
         private final PedidoCreado pedido;
         private final boolean pacienteNuevo;
@@ -46,9 +43,9 @@ public final class NuevoAnalisisController {
     }
 
     /**
-     * Guarda el paciente (nuevo o actualizado), el pedido y sus análisis en
-     * una sola transacción: si algo falla a mitad de camino se deshace todo
-     * (rollback), para no dejar un pedido "a medias".
+     * Guarda el paciente (nuevo o actualizado), el pedido y sus análisis en una sola transacción:
+     * si algo falla a mitad de camino se deshace todo (rollback), para no dejar un pedido "a
+     * medias".
      *
      * @param padre                    componente sobre el que centrar los carteles de error.
      * @param pacienteExistente        true si el DNI tipeado corresponde a un paciente ya registrado.
@@ -63,7 +60,7 @@ public final class NuevoAnalisisController {
             Integer idPacienteExistente, boolean datosPacienteCambiaron, Paciente datosPaciente,
             String medicoDerivante, List<Prestacion> prestaciones) {
 
-        if (conexiones.Sesion.idUsuario <= 0) {
+        if (modelo.Sesion.idUsuario <= 0) {
             JOptionPane.showMessageDialog(padre,
                     "No hay una sesión iniciada (o se abrió esta pantalla sin pasar por el Login). "
                     + "Iniciá sesión antes de generar una orden.",
@@ -96,7 +93,7 @@ public final class NuevoAnalisisController {
 
             Integer idMedico = dao.MedicoDAO.obtenerOCrear(con, medicoDerivante);
 
-            PedidoCreado pedido = dao.PedidoDAO.crearPedido(con, idPaciente, idMedico, conexiones.Sesion.idUsuario);
+            PedidoCreado pedido = dao.PedidoDAO.crearPedido(con, idPaciente, idMedico, modelo.Sesion.idUsuario);
             if (pedido == null) {
                 throw new OperacionCancelada();
             }

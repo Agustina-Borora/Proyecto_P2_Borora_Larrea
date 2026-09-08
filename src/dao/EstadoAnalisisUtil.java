@@ -1,24 +1,24 @@
 package dao;
 
 /**
- * Traduce estado_analisis (+ si el pedido tiene envío/es urgente) al texto
- * que se muestra en la columna Estado. Antes este método (traducirEstado)
- * estaba duplicado, casi idéntico, dentro de EscritorioDAO y RegistroDAO;
- * ahora ambos DAO llaman a esta única versión.
+ * Traduce estado_analisis (+ si el pedido tiene envío/es urgente) al texto que se muestra en
+ * la columna Estado.
  */
 public final class EstadoAnalisisUtil {
 
     private EstadoAnalisisUtil() {
     }
 
-    /** Variante sin marca de urgencia, usada por EscritorioDAO. */
+    /**
+     * Variante sin marca de urgencia, usada por EscritorioDAO.
+     */
     public static String traducir(String estadoAnalisis, int cantEnvios) {
         return traducir(estadoAnalisis, cantEnvios, false);
     }
 
     /**
-     * Variante completa, usada por RegistroDAO: si esUrgente es true, pisa
-     * cualquier otro estado y siempre devuelve "Urgente".
+     * Variante completa, usada por RegistroDAO: si esUrgente es true, pisa cualquier otro estado y
+     * siempre devuelve "Urgente".
      */
     public static String traducir(String estadoAnalisis, int cantEnvios, boolean esUrgente) {
         if (esUrgente) {

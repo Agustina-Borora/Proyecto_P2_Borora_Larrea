@@ -6,8 +6,8 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.plaf.basic.BasicPasswordFieldUI;
 
 /**
- * Campo de contraseña personalizado para Java Swing con diseño redondeado,
- * paleta de colores personalizada y soporte para texto placeholder.
+ * Campo de contraseña personalizado para Java Swing con diseño redondeado, paleta de colores
+ * personalizada y soporte para texto placeholder.
  */
 public class JPasswordFieldRedondeado extends JPasswordField {
 
@@ -17,15 +17,15 @@ public class JPasswordFieldRedondeado extends JPasswordField {
     private Color colorTexto = new Color(220, 235, 225);     // Verde muy claro/blanco
     private Color colorPlaceholder = new Color(130, 155, 142); // Verde apagado/grisáceo
     
-    /** Texto informativo que se muestra cuando el campo está vacío */
+    /**
+     * Texto informativo que se muestra cuando el campo está vacío
+     */
     private String placeholder = "Ingresa tu contraseña";
 
     /**
-     * Constructor por defecto. Configura las propiedades de UI, márgenes, 
-     * fuentes y remueve los estilos por defecto del sistema operativo.
+     * Constructor por defecto.
      */
     public JPasswordFieldRedondeado() {
-        // Elimina el Look & Feel por defecto (evita el rectángulo clásico de Windows)
         setUI(new BasicPasswordFieldUI());
         
         setOpaque(false);                             // Fondo completamente transparente
@@ -40,7 +40,7 @@ public class JPasswordFieldRedondeado extends JPasswordField {
 
     /**
      * Establece o actualiza el texto del placeholder.
-     * 
+     *
      * @param placeholder Mensaje informativo para mostrar cuando el campo esté vacío.
      */
     public void setPlaceholder(String placeholder) {
@@ -49,9 +49,9 @@ public class JPasswordFieldRedondeado extends JPasswordField {
     }
 
     /**
-     * Sobrescribe el renderizado nativo para pintar el fondo redondeado,
-     * el borde y la marca de agua (placeholder).
-     * 
+     * Sobrescribe el renderizado nativo para pintar el fondo redondeado, el borde y la marca de
+     * agua (placeholder).
+     *
      * @param g Objeto Graphics proporcionado por Swing.
      */
     @Override
@@ -61,7 +61,6 @@ public class JPasswordFieldRedondeado extends JPasswordField {
         // Activa el suavizado de bordes (Antialiasing)
         g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
-        // 1. Dibuja el fondo verde oscuro redondeado (radio 20px)
         g2.setColor(colorFondo);
         g2.fillRoundRect(0, 0, getWidth() - 1, getHeight() - 1, 20, 20);
 
@@ -71,21 +70,17 @@ public class JPasswordFieldRedondeado extends JPasswordField {
 
         g2.dispose(); // Libera el contexto de gráficos secundario
 
-        // 3. Pinta el contenido real de la contraseña (máscara de puntos/asteriscos)
         super.paintComponent(g);
 
-        // 4. Pinta el placeholder únicamente cuando el campo está vacío
         if (getPassword().length == 0 && placeholder != null) {
             Graphics2D gPlaceholder = (Graphics2D) g.create();
             gPlaceholder.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
             gPlaceholder.setColor(colorPlaceholder);
             gPlaceholder.setFont(getFont());
             
-            // Cálculo para centrar el texto verticalmente dentro del componente
             FontMetrics fm = gPlaceholder.getFontMetrics();
             int y = (getHeight() - fm.getHeight()) / 2 + fm.getAscent();
             
-            // Dibuja el texto con un margen izquierdo de 18px (coincide con el padding)
             gPlaceholder.drawString(placeholder, 18, y);
             gPlaceholder.dispose();
         }

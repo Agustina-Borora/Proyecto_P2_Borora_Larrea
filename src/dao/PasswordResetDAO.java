@@ -7,15 +7,9 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 
 /**
- * Acceso a la tabla {@code password_reset_tokens}: los códigos de
- * verificación de 6 dígitos que se generan cuando alguien pide recuperar
- * su contraseña desde {@link controlador.PasswordController}.
- *
- * El código nunca se guarda en texto plano: se guarda hasheado con
- * {@link controlador.PasswordHasher}, igual que las contraseñas, así que
- * ni con acceso directo a la base se puede leer el código vigente de
- * nadie. Ver {@code sql/migracion_06_password_reset.sql} para la
- * definición de la tabla.
+ * Acceso a la tabla {@code password_reset_tokens}: los códigos de verificación de 6 dígitos
+ * que se generan cuando alguien pide recuperar su contraseña desde {@link
+ * controlador.PasswordController}.
  */
 public final class PasswordResetDAO {
 
@@ -23,10 +17,7 @@ public final class PasswordResetDAO {
     }
 
     /**
-     * Crea un token nuevo para el usuario. No invalida los tokens
-     * anteriores que hubiera sin usar (quedan vencidos solos con el
-     * tiempo, o se ignoran porque {@link #buscarVigente} siempre trae el
-     * más reciente).
+     * Crea un token nuevo para el usuario.
      */
     public static void crear(Connection conexion, int idUsuario, String codigoHash, Timestamp expiracion) throws SQLException {
         String sql = "INSERT INTO password_reset_tokens (id_usuario, codigo_hash, fecha_creacion, fecha_expiracion, usado) "
@@ -40,8 +31,8 @@ public final class PasswordResetDAO {
     }
 
     /**
-     * Trae el token vigente (no usado y no vencido) más reciente del
-     * usuario, o {@code null} si no tiene ninguno.
+     * Trae el token vigente (no usado y no vencido) más reciente del usuario, o {@code null} si no
+     * tiene ninguno.
      */
     public static Token buscarVigente(Connection conexion, int idUsuario) throws SQLException {
         String sql = "SELECT id_token, codigo_hash FROM password_reset_tokens "
@@ -58,7 +49,9 @@ public final class PasswordResetDAO {
         }
     }
 
-    /** Marca un token como usado, para que el mismo código no pueda canjearse dos veces. */
+    /**
+     * Marca un token como usado, para que el mismo código no pueda canjearse dos veces.
+     */
     public static void marcarUsado(Connection conexion, int idToken) throws SQLException {
         String sql = "UPDATE password_reset_tokens SET usado = 1 WHERE id_token = ?";
         try (PreparedStatement ps = conexion.prepareStatement(sql)) {
@@ -68,9 +61,8 @@ public final class PasswordResetDAO {
     }
 
     /**
-     * Datos mínimos de un token vigente: su id (para poder marcarlo como
-     * usado) y el hash del código (para poder verificarlo con
-     * {@link controlador.PasswordHasher#verificar}).
+     * Datos mínimos de un token vigente: su id (para poder marcarlo como usado) y el hash del
+     * código (para poder verificarlo con {@link controlador.PasswordHasher#verificar}).
      */
     public static final class Token {
         private final int idToken;

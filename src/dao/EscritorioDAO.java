@@ -11,16 +11,13 @@ import modelo.EstadisticasEscritorio;
 import modelo.OrdenResumen;
 
 /**
- * DAO para la pantalla Escritorio: las 4 tarjetas resumen y la tabla
- * "Últimas Órdenes". Mismo patrón que PacienteDAO: métodos estáticos que
- * reciben la Connection ya abierta.
+ * DAO para la pantalla Escritorio: las 4 tarjetas resumen y la tabla "Últimas Órdenes".
  */
 public class EscritorioDAO {
 
     /**
-     * Cuenta los pedido_analisis del mes en curso agrupados por estado, y arma
-     * el objeto que alimenta las 4 tarjetas (Total del mes / Emitidas / En
-     * proceso / Pendientes). Los cancelados no se cuentan en ninguna tarjeta.
+     * Cuenta los pedido_analisis del mes en curso agrupados por estado, y arma el objeto que
+     * alimenta las 4 tarjetas (Total del mes / Emitidas / En proceso / Pendientes).
      */
     public static EstadisticasEscritorio obtenerEstadisticasDelMes(Connection conexion) {
         EstadisticasEscritorio stats = new EstadisticasEscritorio();
@@ -57,9 +54,8 @@ public class EscritorioDAO {
     }
 
     /**
-     * Trae las últimas órdenes (una fila por análisis pedido, no por pedido
-     * completo) para la tabla del Escritorio, con el estado ya traducido al
-     * texto que se muestra en pantalla.
+     * Trae las últimas órdenes (una fila por análisis pedido, no por pedido completo) para la
+     * tabla del Escritorio, con el estado ya traducido al texto que se muestra en pantalla.
      */
     public static List<OrdenResumen> listarUltimasOrdenes(Connection conexion, int limite) {
         List<OrdenResumen> ordenes = new ArrayList<>();

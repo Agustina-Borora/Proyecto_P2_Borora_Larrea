@@ -1,8 +1,8 @@
 package modelo;
 
 /**
- * POJO con los 4 números que muestran las tarjetas del Escritorio,
- * calculados sobre el mes en curso.
+ * POJO con los 4 números que muestran las tarjetas del Escritorio, calculados sobre el mes en
+ * curso.
  */
 public class EstadisticasEscritorio {
 

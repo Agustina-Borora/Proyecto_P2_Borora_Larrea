@@ -7,19 +7,14 @@ import java.sql.SQLException;
 import java.sql.Statement;
 
 /**
- * DAO para la tabla `medicos`. "Medico Derivante" en Datos del Paciente es
- * un campo de texto libre (no un combo cargado de antemano), así que acá se
- * busca un médico ya cargado con ese nombre y, si no existe, se crea uno
- * nuevo -- mismo patrón de "buscar o crear" que dao.AnalisisTipoDAO usa para
- * el nomenclador.
+ * DAO para la tabla `medicos`.
  */
 public class MedicoDAO {
 
     /**
-     * Devuelve el id_medico correspondiente al nombre tipeado: null si el
-     * campo vino vacío (es opcional, no todo pedido tiene médico derivante),
-     * el id existente si ya hay un médico con ese nombre, o el de uno nuevo
-     * recién creado si no existía.
+     * Devuelve el id_medico correspondiente al nombre tipeado: null si el campo vino vacío (es
+     * opcional, no todo pedido tiene médico derivante), el id existente si ya hay un médico con
+     * ese nombre, o el de uno nuevo recién creado si no existía.
      */
     public static Integer obtenerOCrear(Connection con, String nombreMedico) {
         if (nombreMedico == null || nombreMedico.trim().isEmpty()) {

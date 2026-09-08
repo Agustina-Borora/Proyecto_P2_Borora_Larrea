@@ -6,9 +6,9 @@ import java.util.List;
 import modelo.Paciente;
 
 /**
- * Controlador para todo lo que las pantallas necesitan de un paciente sin
- * saber que existe una base de datos: buscarlo por DNI (DatosPersonales,
- * RegistrarResultados), listarlos todos y eliminar uno (TablaPacientes).
+ * Controlador para todo lo que las pantallas necesitan de un paciente sin saber que existe una
+ * base de datos: buscarlo por DNI (DatosPersonales, RegistrarResultados), listarlos todos y
+ * eliminar uno (TablaPacientes).
  */
 public final class PacienteController {
 
