@@ -111,9 +111,17 @@ public Principal() {
 
         switch (id) {
 
-            case "4_1":
-                setForm(new Escritorio());
+            case "4_1": {
+                Escritorio pantallaEscritorio = new Escritorio();
+                pantallaEscritorio.addCargarResultadosListener(new Escritorio.CargarResultadosListener() {
+                    @Override
+                    public void onCargarResultados() {
+                        navegar("4");
+                    }
+                });
+                setForm(pantallaEscritorio);
                 break;
+            }
 
             case "5_1":
                 setForm(new Pacientes());

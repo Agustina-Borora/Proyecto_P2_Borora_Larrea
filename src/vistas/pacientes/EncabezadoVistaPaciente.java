@@ -31,6 +31,7 @@ public class EncabezadoVistaPaciente extends javax.swing.JPanel {
         ayn.putClientProperty("FlatLaf.style", estiloCampo);
         edad.putClientProperty("FlatLaf.style", estiloCampo);
         celular.putClientProperty("FlatLaf.style", estiloCampo);
+        ayn1.putClientProperty("FlatLaf.style", estiloCampo);
 
         sexo.putClientProperty("FlatLaf.style", estiloCampo);
 
@@ -77,16 +78,20 @@ public class EncabezadoVistaPaciente extends javax.swing.JPanel {
             return;
         }
 
+        jLabel1.setText(paciente.getNyaPaciente());
+
         dni.setText(paciente.getDni());
         ayn.setText(paciente.getNyaPaciente());
         celular.setText(paciente.getTelefono());
         edad.setText(String.valueOf(paciente.calcularEdad()));
+        ayn1.setText(paciente.getEmail());
         seleccionarSexoPorId(paciente.getIdSexo());
 
         dni.setEditable(false);
         ayn.setEditable(false);
         celular.setEditable(false);
         edad.setEditable(false);
+        ayn1.setEditable(false);
         sexo.setEnabled(false);
     }
 

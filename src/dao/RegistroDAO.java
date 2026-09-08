@@ -15,8 +15,8 @@ import modelo.OrdenResumen;
 public class RegistroDAO {
 
     /**
-     * SELECT base compartido por listarTodos() y listarPendientes(): trae numero de orden,
-     * paciente, examen, fecha, cobertura, estado y prioridad del pedido.
+     * SELECT base compartido por listarTodos(), listarPendientes() y listarPorPaciente(): trae
+     * numero de orden, paciente, examen, fecha, cobertura, estado y prioridad del pedido.
      */
     private static final String SELECT_BASE =
             "SELECT pa.id_pedido_analisis, pa.id_analisis_tipo, pe.numero_pedido, p.dni_paciente, p.nya_paciente, at.nombre_analisis, " +
@@ -48,6 +48,30 @@ public class RegistroDAO {
         return listar(conexion, sql);
     }
 
+    /**
+     * Para el detalle de un paciente (vistas.pacientes.Vistadetallepaciente): todas sus ordenes,
+     * de la mas reciente a la mas vieja.
+     */
+    public static List<OrdenResumen> listarPorPaciente(Connection conexion, int idPaciente) {
+        String sql = SELECT_BASE + "WHERE p.id_paciente = ? ORDER BY pe.fecha_pedido DESC, pa.created_at DESC";
+        List<OrdenResumen> ordenes = new ArrayList<>();
+
+        try (PreparedStatement ps = conexion.prepareStatement(sql)) {
+            ps.setInt(1, idPaciente);
+
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    ordenes.add(mapearOrden(rs));
+                }
+            }
+
+        } catch (SQLException e) {
+            Mensajes.error("Error al listar las ordenes del paciente", e);
+        }
+
+        return ordenes;
+    }
+
     private static List<OrdenResumen> listar(Connection conexion, String sql) {
         List<OrdenResumen> ordenes = new ArrayList<>();
 
@@ -55,23 +79,7 @@ public class RegistroDAO {
              ResultSet rs = ps.executeQuery()) {
 
             while (rs.next()) {
-                OrdenResumen orden = new OrdenResumen();
-                orden.setIdPedidoAnalisis(rs.getInt("id_pedido_analisis"));
-                orden.setIdAnalisisTipo(rs.getInt("id_analisis_tipo"));
-                orden.setNumeroOrden(rs.getString("numero_pedido"));
-                orden.setDni(rs.getString("dni_paciente"));
-                orden.setPaciente(rs.getString("nya_paciente"));
-                orden.setExamen(rs.getString("nombre_analisis"));
-                orden.setFecha(rs.getDate("fecha_pedido"));
-                orden.setCobertura(rs.getString("nombre_obra_social") != null
-                        ? rs.getString("nombre_obra_social") : "Particular");
-
-                String estadoAnalisis = rs.getString("estado_analisis");
-                String prioridad = rs.getString("prioridad_pedido");
-                boolean esUrgente = "urgente".equals(estadoAnalisis) || "urgente".equals(prioridad);
-                orden.setEstado(EstadoAnalisisUtil.traducir(estadoAnalisis, rs.getInt("cant_envios"), esUrgente));
-
-                ordenes.add(orden);
+                ordenes.add(mapearOrden(rs));
             }
 
         } catch (SQLException e) {
@@ -79,5 +87,29 @@ public class RegistroDAO {
         }
 
         return ordenes;
+    }
+
+    /**
+     * Arma un OrdenResumen a partir de la fila actual de un ResultSet de SELECT_BASE (usado
+     * tanto por listar() como por listarPorPaciente()).
+     */
+    private static OrdenResumen mapearOrden(ResultSet rs) throws SQLException {
+        OrdenResumen orden = new OrdenResumen();
+        orden.setIdPedidoAnalisis(rs.getInt("id_pedido_analisis"));
+        orden.setIdAnalisisTipo(rs.getInt("id_analisis_tipo"));
+        orden.setNumeroOrden(rs.getString("numero_pedido"));
+        orden.setDni(rs.getString("dni_paciente"));
+        orden.setPaciente(rs.getString("nya_paciente"));
+        orden.setExamen(rs.getString("nombre_analisis"));
+        orden.setFecha(rs.getDate("fecha_pedido"));
+        orden.setCobertura(rs.getString("nombre_obra_social") != null
+                ? rs.getString("nombre_obra_social") : "Particular");
+
+        String estadoAnalisis = rs.getString("estado_analisis");
+        String prioridad = rs.getString("prioridad_pedido");
+        boolean esUrgente = "urgente".equals(estadoAnalisis) || "urgente".equals(prioridad);
+        orden.setEstado(EstadoAnalisisUtil.traducir(estadoAnalisis, rs.getInt("cant_envios"), esUrgente));
+
+        return orden;
     }
 }

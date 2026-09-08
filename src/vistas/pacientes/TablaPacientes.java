@@ -133,7 +133,7 @@ public class TablaPacientes extends javax.swing.JPanel {
             @Override
             public void onView(int row) {
                 Paciente p = pacientesActuales.get(row);
-                System.out.println("Ver paciente DNI: " + p.getDni());
+                mostrarDetalle(p);
             }
 
             @Override
@@ -172,6 +172,27 @@ public class TablaPacientes extends javax.swing.JPanel {
 
         jTable1.getColumnModel().getColumn(columnaAccion).setCellRenderer(new TableActionCellRender());
         jTable1.getColumnModel().getColumn(columnaAccion).setCellEditor(new TableActionCellEditor(event));
+    }
+
+    /**
+     * Abre "Detalle de Paciente" (ojito) como ventana flotante sin decoracion, con los datos y
+     * examenes reales del paciente elegido.
+     */
+    private void mostrarDetalle(Paciente paciente) {
+        Vistadetallepaciente panel = new Vistadetallepaciente();
+        panel.cargarPaciente(paciente);
+
+        java.awt.Window ventanaDueña = javax.swing.SwingUtilities.getWindowAncestor(this);
+        javax.swing.JDialog dialogo = new javax.swing.JDialog(
+                ventanaDueña, "Detalle de Paciente", java.awt.Dialog.ModalityType.APPLICATION_MODAL);
+        dialogo.setUndecorated(true);
+        dialogo.setResizable(false);
+        dialogo.getRootPane().setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(220, 225, 222)));
+
+        dialogo.getContentPane().add(panel);
+        dialogo.setSize(1000, 800);
+        dialogo.setLocationRelativeTo(ventanaDueña);
+        dialogo.setVisible(true);
     }
 
     /**

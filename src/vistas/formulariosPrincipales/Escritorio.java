@@ -10,6 +10,21 @@ import modelo.EstadisticasEscritorio;
 public class Escritorio extends javax.swing.JPanel {
 
     /**
+     * Se dispara cuando, desde el detalle de una orden de {@code tablaEscritorio2}, el usuario
+     * aprieta "Cargar Resultados". Este panel no navega por su cuenta -no conoce a Principal ni
+     * a las otras pantallas-, solo reenvía el aviso hacia quien lo contenga.
+     */
+    public interface CargarResultadosListener {
+        void onCargarResultados();
+    }
+
+    private final java.util.List<CargarResultadosListener> listenersCargarResultados = new java.util.ArrayList<>();
+
+    public void addCargarResultadosListener(CargarResultadosListener listener) {
+        listenersCargarResultados.add(listener);
+    }
+
+    /**
      * Arma la pantalla: define el color de texto de cada tarjeta de estadísticas, dispara la carga
      * de datos del mes ({@link #cargarDatos()}) y reemplaza el {@code LayoutManager} de {@code
      * panelBorder2} por uno a medida (ver comentario más abajo) para que las tarjetas y la tabla
@@ -17,6 +32,12 @@ public class Escritorio extends javax.swing.JPanel {
      */
     public Escritorio() {
         initComponents();
+
+        tablaEscritorio2.addCargarResultadosListener(() -> {
+            for (CargarResultadosListener listener : listenersCargarResultados) {
+                listener.onCargarResultados();
+            }
+        });
         // 1. Tarjeta Azul
         card1.setTextColor(new Color(13, 110, 253)); // Azul fuerte para el texto
 

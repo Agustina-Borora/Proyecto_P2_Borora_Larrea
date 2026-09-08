@@ -8,6 +8,8 @@ import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.text.SimpleDateFormat;
+import modelo.DetalleOrden;
 
 /**
  * Pantalla "Detalle de Orden": muestra los datos del paciente y del análisis solicitado para
@@ -47,11 +49,86 @@ public class EscritorioDetalledeOrden extends javax.swing.JPanel {
     private static final String TEXTO_BADGE_TIPO_DEFECTO = "Particular";
 
     /**
+     * Se dispara al presionar "Cargar Resultados" (solo visible cuando el análisis todavía no
+     * está completado): quien use este panel decide a dónde navegar, este panel no conoce nada
+     * de la pantalla principal ni de sus otras pantallas.
+     */
+    public interface CargarResultadosListener {
+        void onCargarResultados();
+    }
+
+    private final java.util.List<CargarResultadosListener> listenersCargarResultados = new java.util.ArrayList<>();
+
+    public void addCargarResultadosListener(CargarResultadosListener listener) {
+        listenersCargarResultados.add(listener);
+    }
+
+    /**
+     * Orden actualmente mostrada (null hasta el primer {@link #cargarDetalle(DetalleOrden)}).
+     */
+    private DetalleOrden detalleActual;
+
+    /**
      * Creates new form EscritorioDetalledeOrden
      */
     public EscritorioDetalledeOrden() {
         initComponents();
         aplicarEstilos();
+
+        jButton1.addActionListener(evt -> {
+            for (CargarResultadosListener listener : listenersCargarResultados) {
+                listener.onCargarResultados();
+            }
+        });
+
+        jButton2.addActionListener(evt -> {
+            java.awt.Window ventana = javax.swing.SwingUtilities.getWindowAncestor(this);
+            if (ventana != null) {
+                ventana.dispose();
+            }
+        });
+    }
+
+    /**
+     * Vuelca en pantalla los datos reales de una orden: cabecera (número, badges de estado y
+     * cobertura), datos del paciente y del médico derivante, examen solicitado y fecha. Nunca
+     * muestra nada de unidad bioquímica ni el desglose del plan de obra social -si el paciente
+     * tiene una, {@code detalle.getCobertura()} ya trae solo su nombre ("Particular" si no
+     * tiene)-. El botón "Cargar Resultados" queda oculto si el análisis ya está completado.
+     */
+    public void cargarDetalle(DetalleOrden detalle) {
+        this.detalleActual = detalle;
+        if (detalle == null) {
+            return;
+        }
+
+        jLabel3.setText("#" + (detalle.getNumeroOrden() != null ? detalle.getNumeroOrden() : "-"));
+        jLabel6.setText(detalle.getEstado());
+        jLabel5.setText(detalle.getCobertura());
+
+        jLabel16.setText(detalle.getDni());
+        jLabel19.setText(detalle.getPaciente());
+        jLabel17.setText(String.valueOf(detalle.getEdad()));
+        jLabel18.setText(detalle.getTelefono());
+        jLabel21.setText(detalle.getEmail());
+        jLabel20.setText(detalle.getMedicoDerivante() != null ? detalle.getMedicoDerivante() : "-");
+
+        SimpleDateFormat formatoFecha = new SimpleDateFormat("dd/MM/yyyy");
+        jLabel23.setText(detalle.getFecha() != null ? formatoFecha.format(detalle.getFecha()) : "-");
+        jLabel22.setText(detalle.getObservacion() != null && !detalle.getObservacion().trim().isEmpty()
+                ? detalle.getObservacion() : "-");
+
+        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+                new Object[][]{{detalle.getExamen()}},
+                new String[]{"Examen"}) {
+            @Override
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return false;
+            }
+        });
+
+        boolean completado = "completado".equals(detalle.getEstadoAnalisisRaw());
+        jButton1.setVisible(!completado);
     }
 
     /**

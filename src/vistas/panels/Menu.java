@@ -54,15 +54,15 @@ public class Menu extends javax.swing.JPanel {
         listMenu1.addItem(new Model_Menu("3", "nuevoanalisis", "Nuevo Analisis", Model_Menu.MenuType.MENU));
         listMenu1.addItem(new Model_Menu("4", "registrarresultados", "Registrar Resultados", Model_Menu.MenuType.MENU));
         listMenu1.addItem(new Model_Menu("5", "catalogodeexamen", "Catalogo de Examenes", Model_Menu.MenuType.MENU));
-        listMenu1.addItem(new Model_Menu("1", "Cotización", Model_Menu.MenuType.MENU));
+        listMenu1.addItem(new Model_Menu("1","cotizacion", "Cotización", Model_Menu.MenuType.MENU));
         listMenu1.addItem(new Model_Menu("", " ", Model_Menu.MenuType.EMPTY));
 
         listMenu1.addItem(new Model_Menu("", "Administracion", Model_Menu.MenuType.TITLE));
         listMenu1.addItem(new Model_Menu("", " ", Model_Menu.MenuType.EMPTY));
         listMenu1.addItem(new Model_Menu("6", "pagos", "Pagos", Model_Menu.MenuType.MENU));
-        listMenu1.addItem(new Model_Menu("7", "Usuarios", Model_Menu.MenuType.MENU));
-        listMenu1.addItem(new Model_Menu("8", "Estadisticas", Model_Menu.MenuType.MENU));
-        listMenu1.addItem(new Model_Menu("9", "Configuracion", Model_Menu.MenuType.MENU));
+        listMenu1.addItem(new Model_Menu("7","usuario", "Usuarios", Model_Menu.MenuType.MENU));
+        listMenu1.addItem(new Model_Menu("8","estadistica", "Estadisticas", Model_Menu.MenuType.MENU));
+        listMenu1.addItem(new Model_Menu("9","configuracion", "Configuracion", Model_Menu.MenuType.MENU));
         listMenu1.addItem(new Model_Menu("", " ", Model_Menu.MenuType.EMPTY));
         listMenu1.addItem(new Model_Menu("10", "Cerrar Sesion", Model_Menu.MenuType.MENU));
         javax.swing.SwingUtilities.invokeLater(new Runnable() {

@@ -40,7 +40,7 @@ public class VistaPreview {
         }
 
         java.awt.EventQueue.invokeLater(() -> {
-            javax.swing.JPanel pantalla = new EscritorioDetalledeOrden();
+            javax.swing.JPanel pantalla = new vistas.escritorio.EscritorioDetalledeOrden();
 
             javax.swing.JFrame ventana = new javax.swing.JFrame(
                     "Vista previa - " + pantalla.getClass().getSimpleName());
