@@ -6,10 +6,51 @@ package vistas.formulariosPrincipales;
 public class Usuarios extends javax.swing.JPanel {
 
     /**
-     * Construye el panel e inicializa sus componentes gráficos.
+     * Construye el panel, inicializa sus componentes gráficos y conecta el botón "Nuevo Usuario".
+     * El listado, y el Ver/Editar/Eliminar de cada fila, los maneja tablaUsuarios1 por su cuenta
+     * (mismo criterio que vistas.pacientes.TablaPacientes con la pantalla "Pacientes").
      */
     public Usuarios() {
         initComponents();
+        jButton1.addActionListener(evt -> abrirNuevoUsuario());
+        tablaUsuarios1.setAlCargarUsuarios(this::actualizarTotales);
+    }
+
+    /**
+     * Refleja en cardUsuarios1 (Total de Usuarios / Administradores / Tecnicos) el listado que
+     * acaba de (re)cargar tablaUsuarios1.
+     */
+    private void actualizarTotales(java.util.List<modelo.Usuario> usuarios) {
+        int administradores = 0;
+        int tecnicos = 0;
+        for (modelo.Usuario usuario : usuarios) {
+            if ("Administrador".equalsIgnoreCase(usuario.getRol())) {
+                administradores++;
+            } else if ("Tecnico".equalsIgnoreCase(usuario.getRol())) {
+                tecnicos++;
+            }
+        }
+        cardUsuarios1.setTotales(usuarios.size(), administradores, tecnicos);
+    }
+
+    /**
+     * Abre "Nuevo Usuario" ({@link vista.usuarios.CrearUsuario}) como ventana flotante (modal),
+     * centrada sobre esta pantalla.
+     */
+    private void abrirNuevoUsuario() {
+        vista.usuarios.CrearUsuario panel = new vista.usuarios.CrearUsuario();
+
+        javax.swing.JDialog dialogo = new javax.swing.JDialog(
+                javax.swing.SwingUtilities.getWindowAncestor(this),
+                "Nuevo Usuario",
+                java.awt.Dialog.ModalityType.APPLICATION_MODAL);
+
+        panel.getBotonCancelar().addActionListener(evt -> dialogo.dispose());
+
+        dialogo.getContentPane().add(panel);
+        dialogo.pack();
+        dialogo.setLocationRelativeTo(this);
+        dialogo.setVisible(true);
     }
 
     /**

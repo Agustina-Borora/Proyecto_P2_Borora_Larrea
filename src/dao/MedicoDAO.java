@@ -5,11 +5,34 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * DAO para la tabla `medicos`.
  */
 public class MedicoDAO {
+
+    /**
+     * Devuelve los nombres de los médicos activos, ordenados alfabéticamente, para el combo de
+     * "Médico Derivante" en Nuevo Análisis.
+     */
+    public static List<String> listarNombres(Connection con) {
+        List<String> nombres = new ArrayList<>();
+        String sql = "SELECT nombre_medico FROM medicos WHERE activo_medico = 1 ORDER BY nombre_medico";
+
+        try (Statement st = con.createStatement();
+             ResultSet rs = st.executeQuery(sql)) {
+
+            while (rs.next()) {
+                nombres.add(rs.getString("nombre_medico"));
+            }
+
+        } catch (SQLException e) {
+            Mensajes.error("Error al listar los médicos", e);
+        }
+        return nombres;
+    }
 
     /**
      * Devuelve el id_medico correspondiente al nombre tipeado: null si el campo vino vacío (es

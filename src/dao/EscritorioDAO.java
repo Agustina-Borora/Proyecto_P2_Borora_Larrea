@@ -65,15 +65,17 @@ public class EscritorioDAO {
         List<OrdenResumen> ordenes = new ArrayList<>();
 
         String sql = "SELECT pa.id_pedido_analisis, pa.id_analisis_tipo, pe.numero_pedido, " +
-                "p.dni_paciente, p.nya_paciente, at.nombre_analisis, pe.fecha_pedido, " +
-                "pa.estado_analisis, os.nombre_obra_social, " +
+                "p.dni_paciente, p.nya_paciente, " +
+                "at.nombre_analisis, pe.fecha_pedido, pa.estado_analisis, " +
+                "(SELECT os.nombre_obra_social FROM pagos pg " +
+                "   JOIN obras_sociales os ON os.id_obra_social = pg.id_obra_social " +
+                "   WHERE pg.id_pedido = pe.id_pedido AND pg.anulado_pago = 0 AND pg.id_obra_social IS NOT NULL " +
+                "   LIMIT 1) AS nombre_obra_social, " +
                 "(SELECT COUNT(*) FROM envios e WHERE e.id_pedido = pe.id_pedido) AS cant_envios " +
                 "FROM pedido_analisis pa " +
                 "JOIN pedidos pe ON pe.id_pedido = pa.id_pedido " +
                 "JOIN pacientes p ON p.id_paciente = pe.id_paciente " +
                 "JOIN analisis_tipos at ON at.id_analisis_tipo = pa.id_analisis_tipo " +
-                "LEFT JOIN planes_obra_social plan ON plan.id_plan = p.id_plan " +
-                "LEFT JOIN obras_sociales os ON os.id_obra_social = plan.id_obra_social " +
                 "ORDER BY pa.created_at DESC " +
                 "LIMIT ?";
 
@@ -107,22 +109,25 @@ public class EscritorioDAO {
     /**
      * Trae el detalle completo de una orden puntual (un {@code pedido_analisis}) para la
      * pantalla "Detalle de Orden": datos del paciente, médico derivante (si el pedido tiene uno
-     * cargado), examen, fecha y cobertura -esta última mostrando solo el nombre de la obra
-     * social cuando corresponde, igual que en {@link RegistroDAO}, nunca el plan ni ningún dato
-     * de unidad bioquímica-. Devuelve null si no existe una orden con ese id.
+     * cargado), examen, fecha y cobertura -esta última mostrando el nombre de la obra social que
+     * cubrió ese pedido puntual (vía `pagos.id_obra_social`, no la lista de obras sociales del
+     * paciente), igual que en {@link RegistroDAO}-. Devuelve null si no existe una orden con ese id.
      */
     public static DetalleOrden buscarDetalleOrden(Connection conexion, int idPedidoAnalisis) {
         String sql = "SELECT pa.id_pedido_analisis, pa.id_analisis_tipo, pa.estado_analisis, " +
                 "pe.numero_pedido, pe.fecha_pedido, " +
-                "p.dni_paciente, p.nya_paciente, p.fecha_nacimiento, p.telefono_paciente, p.email_paciente, " +
-                "at.nombre_analisis, os.nombre_obra_social, m.nombre_medico, " +
+                "p.dni_paciente, p.nya_paciente, " +
+                "p.fecha_nacimiento, p.telefono_paciente, p.email_paciente, " +
+                "at.nombre_analisis, m.nombre_medico, " +
+                "(SELECT os.nombre_obra_social FROM pagos pg " +
+                "   JOIN obras_sociales os ON os.id_obra_social = pg.id_obra_social " +
+                "   WHERE pg.id_pedido = pe.id_pedido AND pg.anulado_pago = 0 AND pg.id_obra_social IS NOT NULL " +
+                "   LIMIT 1) AS nombre_obra_social, " +
                 "(SELECT COUNT(*) FROM envios e WHERE e.id_pedido = pe.id_pedido) AS cant_envios " +
                 "FROM pedido_analisis pa " +
                 "JOIN pedidos pe ON pe.id_pedido = pa.id_pedido " +
                 "JOIN pacientes p ON p.id_paciente = pe.id_paciente " +
                 "JOIN analisis_tipos at ON at.id_analisis_tipo = pa.id_analisis_tipo " +
-                "LEFT JOIN planes_obra_social plan ON plan.id_plan = p.id_plan " +
-                "LEFT JOIN obras_sociales os ON os.id_obra_social = plan.id_obra_social " +
                 "LEFT JOIN medicos m ON m.id_medico = pe.id_medico " +
                 "WHERE pa.id_pedido_analisis = ?";
 

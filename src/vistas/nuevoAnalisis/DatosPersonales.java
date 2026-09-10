@@ -32,7 +32,7 @@ public class DatosPersonales extends javax.swing.JPanel {
         ayn.putClientProperty("FlatLaf.style", estiloCampo);
         celular.putClientProperty("FlatLaf.style", estiloCampo);
         email.putClientProperty("FlatLaf.style", estiloCampo);
-        medico.putClientProperty("FlatLaf.style", estiloCampo);
+        jComboBox1.putClientProperty("FlatLaf.style", estiloCampo);
         observacion.putClientProperty("FlatLaf.style", estiloCampo);
         sexo.putClientProperty("FlatLaf.style", estiloCampo);
 
@@ -49,11 +49,12 @@ public class DatosPersonales extends javax.swing.JPanel {
         }
 
         ((javax.swing.text.AbstractDocument) ayn.getDocument()).setDocumentFilter(new vistas.panels.FiltroSoloLetras());
-        ((javax.swing.text.AbstractDocument) medico.getDocument()).setDocumentFilter(new vistas.panels.FiltroSoloLetras());
         ((javax.swing.text.AbstractDocument) celular.getDocument()).setDocumentFilter(new vistas.panels.FiltroSoloDigitos(LARGO_MAX_CELULAR));
         ((javax.swing.text.AbstractDocument) observacion.getDocument()).setDocumentFilter(new vistas.panels.FiltroTextoObservacion());
 
         cargarSexos();
+        cargarMedicos();
+        jButton1.addActionListener(evt -> agregarMedicoNuevo());
 
         configurarDni();
         bloquearCamposPaciente();
@@ -66,6 +67,12 @@ public class DatosPersonales extends javax.swing.JPanel {
      * Sexos cargados desde la tabla `sexos`, en el mismo orden que las opciones del combo.
      */
     private java.util.List<modelo.Sexo> listaSexos = new java.util.ArrayList<>();
+
+    /**
+     * Modelo del combo de médicos derivantes (tabla `medicos`), para poder agregarle nombres
+     * nuevos desde {@link #agregarMedicoNuevo()} sin tener que recargarlo entero de la base.
+     */
+    private javax.swing.DefaultComboBoxModel<String> modeloMedico;
 
     /**
      * id_paciente si el DNI tipeado corresponde a un paciente ya registrado; null si es uno nuevo.
@@ -102,6 +109,48 @@ public class DatosPersonales extends javax.swing.JPanel {
                 return;
             }
         }
+    }
+
+    /**
+     * Trae los médicos reales de la base (tabla `medicos`) y arma el modelo del combo con sus
+     * nombres, más una opción en blanco al principio (el campo es opcional).
+     */
+    private void cargarMedicos() {
+        java.util.List<String> nombres = controlador.MedicoController.listarNombres(this);
+
+        modeloMedico = new javax.swing.DefaultComboBoxModel<>();
+        modeloMedico.addElement("");
+        for (String nombre : nombres) {
+            modeloMedico.addElement(nombre);
+        }
+        jComboBox1.setModel(modeloMedico);
+    }
+
+    /**
+     * Se llama al apretar el botón "+" junto al combo de médicos: pide un nombre por teclado y,
+     * si no está ya en la lista (sin importar mayúsculas/minúsculas), lo agrega al combo y lo deja
+     * seleccionado. El médico recién se crea de verdad en la base al generar la orden, vía
+     * {@code MedicoDAO.obtenerOCrear}.
+     */
+    private void agregarMedicoNuevo() {
+        String nombre = javax.swing.JOptionPane.showInputDialog(this,
+                "Nombre del médico derivante:", "Nuevo Médico", javax.swing.JOptionPane.PLAIN_MESSAGE);
+        if (nombre == null) {
+            return;
+        }
+        nombre = nombre.trim();
+        if (nombre.isEmpty()) {
+            return;
+        }
+
+        for (int i = 0; i < modeloMedico.getSize(); i++) {
+            if (nombre.equalsIgnoreCase(modeloMedico.getElementAt(i))) {
+                jComboBox1.setSelectedIndex(i);
+                return;
+            }
+        }
+        modeloMedico.addElement(nombre);
+        jComboBox1.setSelectedItem(nombre);
     }
 
     /**
@@ -232,7 +281,8 @@ public class DatosPersonales extends javax.swing.JPanel {
     }
 
     public String getMedicoDerivante() {
-        return medico.getText();
+        Object seleccionado = jComboBox1.getSelectedItem();
+        return seleccionado != null ? seleccionado.toString() : "";
     }
 
     public String getObservacionPedido() {
@@ -307,9 +357,6 @@ public class DatosPersonales extends javax.swing.JPanel {
         p.setIdSexo(idSexo != null ? idSexo : 0);
         p.setTelefono(celular.getText().trim());
         p.setEmail(email.getText().trim());
-        p.setIdPlan(null);
-        p.setNroAfiliado(null);
-        p.setIdRegistradoPor(modelo.Sesion.idUsuario);
         return p;
     }
 
@@ -321,7 +368,9 @@ public class DatosPersonales extends javax.swing.JPanel {
      */
     public void limpiarFormulario() {
         dni.setText("");
-        medico.setText("");
+        if (jComboBox1.getItemCount() > 0) {
+            jComboBox1.setSelectedIndex(0);
+        }
         observacion.setText("");
     }
 
@@ -335,7 +384,6 @@ public class DatosPersonales extends javax.swing.JPanel {
         dni = new javax.swing.JTextField();
         celular = new javax.swing.JTextField();
         email = new javax.swing.JTextField();
-        medico = new javax.swing.JTextField();
         observacion = new javax.swing.JTextField();
         ayn = new javax.swing.JTextField();
         fecha = new com.toedter.calendar.JDateChooser();
@@ -346,6 +394,8 @@ public class DatosPersonales extends javax.swing.JPanel {
         jLabel8 = new javax.swing.JLabel();
         jLabel9 = new javax.swing.JLabel();
         sexo = new javax.swing.JComboBox<>();
+        jComboBox1 = new javax.swing.JComboBox<>();
+        jButton1 = new javax.swing.JButton();
 
         setBackground(new java.awt.Color(255, 255, 255));
         setPreferredSize(new java.awt.Dimension(982, 300));
@@ -358,12 +408,6 @@ public class DatosPersonales extends javax.swing.JPanel {
 
         jLabel3.setFont(new java.awt.Font("SansSerif", 1, 14)); // NOI18N
         jLabel3.setText("DNI");
-
-        medico.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                medicoActionPerformed(evt);
-            }
-        });
 
         jLabel4.setFont(new java.awt.Font("SansSerif", 1, 14)); // NOI18N
         jLabel4.setText("Sexo");
@@ -389,6 +433,10 @@ public class DatosPersonales extends javax.swing.JPanel {
                 sexoActionPerformed(evt);
             }
         });
+
+        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+
+        jButton1.setText("+");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -422,13 +470,14 @@ public class DatosPersonales extends javax.swing.JPanel {
                                 .addGap(12, 12, 12)
                                 .addComponent(jLabel1))
                             .addGroup(layout.createSequentialGroup()
-                                .addGap(92, 92, 92)
+                                .addGap(102, 102, 102)
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jLabel7, javax.swing.GroupLayout.PREFERRED_SIZE, 210, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addGroup(layout.createSequentialGroup()
-                                        .addGap(10, 10, 10)
-                                        .addComponent(medico, javax.swing.GroupLayout.PREFERRED_SIZE, 282, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                                .addGap(52, 52, 52)
+                                        .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, 219, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                        .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 54, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addComponent(jLabel7, javax.swing.GroupLayout.PREFERRED_SIZE, 210, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGap(49, 49, 49)
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addComponent(jLabel8, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addComponent(observacion, javax.swing.GroupLayout.PREFERRED_SIZE, 804, javax.swing.GroupLayout.PREFERRED_SIZE))))
@@ -440,7 +489,7 @@ public class DatosPersonales extends javax.swing.JPanel {
             .addGroup(layout.createSequentialGroup()
                 .addGap(13, 13, 13)
                 .addComponent(jLabel1)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 8, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -456,15 +505,19 @@ public class DatosPersonales extends javax.swing.JPanel {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(fecha, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(23, 23, 23)))
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jLabel4)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(sexo, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jLabel7)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(medico, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(jLabel7)
+                        .addGap(8, 8, 8)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(1, 1, 1)
+                                .addComponent(jComboBox1))
+                            .addComponent(jButton1)))
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel5, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 19, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -477,7 +530,7 @@ public class DatosPersonales extends javax.swing.JPanel {
                         .addComponent(jLabel8, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(observacion, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(85, Short.MAX_VALUE))
+                .addContainerGap(47, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
@@ -485,16 +538,14 @@ public class DatosPersonales extends javax.swing.JPanel {
         // TODO add your handling code here:
     }//GEN-LAST:event_sexoActionPerformed
 
-    private void medicoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_medicoActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_medicoActionPerformed
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JTextField ayn;
     private javax.swing.JTextField celular;
     private javax.swing.JTextField dni;
     private javax.swing.JTextField email;
     private com.toedter.calendar.JDateChooser fecha;
+    private javax.swing.JButton jButton1;
+    private javax.swing.JComboBox<String> jComboBox1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
@@ -504,7 +555,6 @@ public class DatosPersonales extends javax.swing.JPanel {
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;
-    private javax.swing.JTextField medico;
     private javax.swing.JTextField observacion;
     private javax.swing.JComboBox<String> sexo;
     // End of variables declaration//GEN-END:variables

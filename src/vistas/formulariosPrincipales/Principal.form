@@ -27,15 +27,12 @@
   <Layout>
     <DimensionLayout dim="0">
       <Group type="103" groupAlignment="0" attributes="0">
-          <Group type="102" alignment="0" attributes="0">
-              <Component id="panelBorder1" min="-2" pref="1314" max="32767" attributes="0"/>
-              <EmptySpace min="0" pref="0" max="0" attributes="0"/>
-          </Group>
+          <Component id="panelBorder1" min="-2" pref="1314" max="-2" attributes="0"/>
       </Group>
     </DimensionLayout>
     <DimensionLayout dim="1">
       <Group type="103" groupAlignment="0" attributes="0">
-          <Component id="panelBorder1" alignment="0" pref="0" max="32767" attributes="0"/>
+          <Component id="panelBorder1" min="-2" pref="851" max="-2" attributes="0"/>
       </Group>
     </DimensionLayout>
   </Layout>
@@ -55,8 +52,10 @@
       </Layout>
       <SubComponents>
         <Component class="vistas.panels.Menu" name="menu1">
-          <Constraints layoutClass="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout">
-            <AbsoluteConstraints x="0" y="0" width="-1" height="870"/>
+          <Constraints>
+            <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout" value="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout$AbsoluteConstraintsDescription">
+              <AbsoluteConstraints x="0" y="0" width="-1" height="-1"/>
+            </Constraint>
           </Constraints>
         </Component>
         <Container class="javax.swing.JPanel" name="contenedor">
@@ -66,11 +65,13 @@
             </Property>
             <Property name="opaque" type="boolean" value="false"/>
           </Properties>
-          <Constraints layoutClass="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout">
-            <AbsoluteConstraints x="280" y="0" width="1030" height="870"/>
+          <Constraints>
+            <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout" value="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout$AbsoluteConstraintsDescription">
+              <AbsoluteConstraints x="280" y="0" width="1030" height="890"/>
+            </Constraint>
           </Constraints>
 
-          <Layout class="java.awt.BorderLayout"/>
+          <Layout class="org.netbeans.modules.form.compat2.layouts.DesignBorderLayout"/>
         </Container>
       </SubComponents>
     </Container>

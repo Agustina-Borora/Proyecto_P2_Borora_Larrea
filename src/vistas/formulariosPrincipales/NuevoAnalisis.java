@@ -53,8 +53,114 @@ public class NuevoAnalisis extends javax.swing.JPanel {
             @Override
             public void onCoberturaCambiada(String clave) {
                 solicitudAnalisis1.actualizarObraSocial(clave);
+                actualizarVisibilidadCobertura(clave);
             }
         });
+        solicitudAnalisis1.addSeleccionListener(this::actualizarTotal);
+
+        jLabel4.setText("Obra Social");
+        jLabel6.setText("Método de Pago");
+        actualizarVisibilidadCobertura(tipoCobertura1.getCoberturaSeleccionada());
+
+        String estiloCampo = "arc: 8; ";
+        jTextField2.putClientProperty("FlatLaf.style", estiloCampo);
+        jComboBox2.putClientProperty("FlatLaf.style", estiloCampo);
+        jComboBox3.putClientProperty("FlatLaf.style", estiloCampo);
+        jTextField1.putClientProperty("FlatLaf.style", estiloCampo);
+
+        // El total se calcula solo (suma de UB + acto bioquímico, por el precio de la UB) y el
+        // precio de la UB sale de la base: ninguno de los dos se tipea a mano.
+        jTextField2.setEditable(false);
+        jTextField1.setEditable(false);
+
+        cargarObrasSociales();
+        cargarMetodosPago();
+        cargarValorUb();
+        actualizarTotal();
+    }
+
+    /**
+     * Unidades Bioquímicas fijas del "acto bioquímico" que se suman siempre, además de las UB de
+     * cada análisis elegido, para calcular el total.
+     */
+    private static final java.math.BigDecimal UB_ACTO_BIOQUIMICO = new java.math.BigDecimal(3);
+
+    /**
+     * Precio vigente de la UB, cargado una vez al abrir la pantalla (tabla `valor_ub`); null si
+     * todavía no hay ningún valor cargado en la base.
+     */
+    private java.math.BigDecimal valorUbActual;
+
+    /**
+     * Trae las obras sociales reales de la base y arma el modelo del combo con sus nombres.
+     */
+    private void cargarObrasSociales() {
+        java.util.List<String> nombres = controlador.ObraSocialController.listarNombres(this);
+        javax.swing.DefaultComboBoxModel<String> modelo = new javax.swing.DefaultComboBoxModel<>();
+        for (String nombre : nombres) {
+            modelo.addElement(nombre);
+        }
+        jComboBox2.setModel(modelo);
+    }
+
+    /**
+     * Trae los métodos de pago reales de la base y arma el modelo del combo con sus nombres.
+     */
+    private void cargarMetodosPago() {
+        java.util.List<String> nombres = controlador.MetodoPagoController.listarNombres(this);
+        javax.swing.DefaultComboBoxModel<String> modelo = new javax.swing.DefaultComboBoxModel<>();
+        for (String nombre : nombres) {
+            modelo.addElement(nombre);
+        }
+        jComboBox3.setModel(modelo);
+    }
+
+    /**
+     * Trae el precio vigente de la UB (tabla `valor_ub`) y lo muestra en "Precio (UB)".
+     */
+    private void cargarValorUb() {
+        valorUbActual = controlador.ValorUbController.obtenerVigente(this);
+        jTextField1.setText(valorUbActual != null ? valorUbActual.toPlainString() : "");
+    }
+
+    /**
+     * Recalcula el total cada vez que cambia la lista de análisis elegidos: (suma de las UB de
+     * cada análisis + {@link #UB_ACTO_BIOQUIMICO}) × {@link #valorUbActual}. Es el mismo total
+     * sin importar la cobertura elegida -lo que cambia según la cobertura es quién lo paga, no
+     * cuánto es-.
+     */
+    private void actualizarTotal() {
+        java.math.BigDecimal sumaUb = java.math.BigDecimal.ZERO;
+        for (modelo.Prestacion prestacion : solicitudAnalisis1.getPrestacionesSeleccionadas()) {
+            if (prestacion.getUnidadesBioquimicas() != null) {
+                sumaUb = sumaUb.add(prestacion.getUnidadesBioquimicas());
+            }
+        }
+        sumaUb = sumaUb.add(UB_ACTO_BIOQUIMICO);
+
+        java.math.BigDecimal total = valorUbActual != null
+                ? sumaUb.multiply(valorUbActual).setScale(2, java.math.RoundingMode.HALF_UP)
+                : java.math.BigDecimal.ZERO;
+        jTextField2.setText(total.toPlainString());
+    }
+
+    /**
+     * Muestra u oculta el combo de Obra Social ({@code jComboBox2}) y el de Método de Pago
+     * ({@code jComboBox3}) -con su etiqueta cada uno- según la cobertura elegida en {@code
+     * tipoCobertura1}: en Particular solo tiene sentido el método de pago, en Obra Social solo la
+     * obra social (la cubre al 100%, no hay nada que pagar), y en Mixto se necesitan los dos.
+     */
+    private void actualizarVisibilidadCobertura(String clave) {
+        boolean mostrarObraSocial = "OBRA_SOCIAL".equals(clave) || "MIXTO".equals(clave);
+        boolean mostrarMetodoPago = "PARTICULAR".equals(clave) || "MIXTO".equals(clave);
+
+        jLabel4.setVisible(mostrarObraSocial);
+        jComboBox2.setVisible(mostrarObraSocial);
+        jLabel6.setVisible(mostrarMetodoPago);
+        jComboBox3.setVisible(mostrarMetodoPago);
+
+        jPanel1.revalidate();
+        jPanel1.repaint();
     }
 
     /**
@@ -152,6 +258,17 @@ public class NuevoAnalisis extends javax.swing.JPanel {
         solicitudAnalisis1 = new vistas.nuevoAnalisis.SolicitudAnalisis();
         jButton1 = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
+        jPanel1 = new javax.swing.JPanel();
+        jComboBox2 = new javax.swing.JComboBox<>();
+        jTextField1 = new javax.swing.JTextField();
+        jLabel4 = new javax.swing.JLabel();
+        jLabel3 = new javax.swing.JLabel();
+        jLabel5 = new javax.swing.JLabel();
+        jLabel6 = new javax.swing.JLabel();
+        jComboBox3 = new javax.swing.JComboBox<>();
+        jPanel2 = new javax.swing.JPanel();
+        jLabel7 = new javax.swing.JLabel();
+        jTextField2 = new javax.swing.JTextField();
 
         setPreferredSize(new java.awt.Dimension(982, 803));
 
@@ -174,6 +291,113 @@ public class NuevoAnalisis extends javax.swing.JPanel {
             }
         });
 
+        jComboBox2.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        jComboBox2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jComboBox2ActionPerformed(evt);
+            }
+        });
+
+        jTextField1.setText("jTextField1");
+
+        jLabel4.setFont(new java.awt.Font("SansSerif", 1, 14)); // NOI18N
+
+        jLabel3.setFont(new java.awt.Font("SansSerif", 1, 14)); // NOI18N
+        jLabel3.setText("total");
+
+        jLabel5.setFont(new java.awt.Font("SansSerif", 1, 14)); // NOI18N
+
+        jLabel6.setFont(new java.awt.Font("SansSerif", 1, 14)); // NOI18N
+
+        jComboBox3.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+
+        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
+        jPanel2.setLayout(jPanel2Layout);
+        jPanel2Layout.setHorizontalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 502, Short.MAX_VALUE)
+        );
+        jPanel2Layout.setVerticalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 69, Short.MAX_VALUE)
+        );
+
+        jLabel7.setFont(new java.awt.Font("SansSerif", 1, 14)); // NOI18N
+        jLabel7.setText("Precio (UB):");
+
+        jTextField2.setText("jTextField1");
+        jTextField2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jTextField2ActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 168, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(23, 23, 23))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                        .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, 179, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)))
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 168, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jComboBox2, javax.swing.GroupLayout.PREFERRED_SIZE, 168, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 168, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jComboBox3, javax.swing.GroupLayout.PREFERRED_SIZE, 168, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(26, 26, 26)
+                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jLabel7, javax.swing.GroupLayout.PREFERRED_SIZE, 113, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 172, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
+            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(jPanel1Layout.createSequentialGroup()
+                    .addGap(213, 213, 213)
+                    .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 168, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addContainerGap(1217, Short.MAX_VALUE)))
+        );
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel6, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                .addComponent(jLabel3)
+                                .addComponent(jLabel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jComboBox2, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jComboBox3, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(54, 54, 54))))
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGap(30, 30, 30)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel7))
+                .addGap(0, 0, Short.MAX_VALUE))
+            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(jPanel1Layout.createSequentialGroup()
+                    .addGap(23, 23, 23)
+                    .addComponent(jLabel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGap(85, 85, 85)))
+        );
+
         javax.swing.GroupLayout panelBorder1Layout = new javax.swing.GroupLayout(panelBorder1);
         panelBorder1.setLayout(panelBorder1Layout);
         panelBorder1Layout.setHorizontalGroup(
@@ -184,13 +408,21 @@ public class NuevoAnalisis extends javax.swing.JPanel {
                 .addGap(18, 18, 18)
                 .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(37, 37, 37))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelBorder1Layout.createSequentialGroup()
+            .addGroup(panelBorder1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(tipoCobertura1, javax.swing.GroupLayout.DEFAULT_SIZE, 1597, Short.MAX_VALUE)
+                .addContainerGap())
+            .addGroup(panelBorder1Layout.createSequentialGroup()
                 .addGap(11, 11, 11)
-                .addGroup(panelBorder1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(tipoCobertura1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(solicitudAnalisis1, javax.swing.GroupLayout.DEFAULT_SIZE, 1192, Short.MAX_VALUE)
-                    .addComponent(datosPersonales2, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addGap(11, 11, 11))
+                .addGroup(panelBorder1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(panelBorder1Layout.createSequentialGroup()
+                        .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addContainerGap())
+                    .addGroup(panelBorder1Layout.createSequentialGroup()
+                        .addGroup(panelBorder1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(solicitudAnalisis1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(datosPersonales2, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGap(11, 11, 11))))
         );
         panelBorder1Layout.setVerticalGroup(
             panelBorder1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -199,8 +431,10 @@ public class NuevoAnalisis extends javax.swing.JPanel {
                 .addComponent(datosPersonales2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(tipoCobertura1, javax.swing.GroupLayout.PREFERRED_SIZE, 220, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(2, 2, 2)
+                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 97, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(solicitudAnalisis1, javax.swing.GroupLayout.PREFERRED_SIZE, 363, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(solicitudAnalisis1, javax.swing.GroupLayout.PREFERRED_SIZE, 343, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(41, 41, 41)
                 .addGroup(panelBorder1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, 40, Short.MAX_VALUE)
@@ -214,7 +448,7 @@ public class NuevoAnalisis extends javax.swing.JPanel {
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 1297, Short.MAX_VALUE)
+            .addComponent(jScrollPane1)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -251,11 +485,30 @@ public class NuevoAnalisis extends javax.swing.JPanel {
         }
     }//GEN-LAST:event_jButton2ActionPerformed
 
+    private void jTextField2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField2ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jTextField2ActionPerformed
+
+    private void jComboBox2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBox2ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jComboBox2ActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private vistas.nuevoAnalisis.DatosPersonales datosPersonales2;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
+    private javax.swing.JComboBox<String> jComboBox2;
+    private javax.swing.JComboBox<String> jComboBox3;
+    private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel5;
+    private javax.swing.JLabel jLabel6;
+    private javax.swing.JLabel jLabel7;
+    private javax.swing.JPanel jPanel1;
+    private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JTextField jTextField1;
+    private javax.swing.JTextField jTextField2;
     private vistas.panels.PanelBorder panelBorder1;
     private vistas.nuevoAnalisis.SolicitudAnalisis solicitudAnalisis1;
     private vistas.nuevoAnalisis.TipoCobertura tipoCobertura1;

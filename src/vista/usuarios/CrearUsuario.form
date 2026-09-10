@@ -21,11 +21,28 @@
   <Layout>
     <DimensionLayout dim="0">
       <Group type="103" groupAlignment="0" attributes="0">
-          <Group type="102" alignment="0" attributes="0">
-              <EmptySpace max="32767" attributes="0"/>
+          <Group type="102" attributes="0">
+              <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" attributes="0">
-                  <Component id="jTabbedPane1" min="-2" pref="849" max="-2" attributes="0"/>
-                  <Component id="jLabel3" min="-2" pref="153" max="-2" attributes="0"/>
+                  <Group type="102" alignment="0" attributes="0">
+                      <Component id="jTabbedPane1" min="-2" pref="849" max="-2" attributes="0"/>
+                      <EmptySpace max="32767" attributes="0"/>
+                  </Group>
+                  <Group type="102" alignment="1" attributes="0">
+                      <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
+                      <Group type="103" groupAlignment="0" attributes="0">
+                          <Group type="102" alignment="1" attributes="0">
+                              <Component id="jLabel3" min="-2" pref="153" max="-2" attributes="0"/>
+                              <EmptySpace min="-2" pref="696" max="-2" attributes="0"/>
+                          </Group>
+                          <Group type="102" alignment="1" attributes="0">
+                              <Component id="jButton6" min="-2" pref="130" max="-2" attributes="0"/>
+                              <EmptySpace max="-2" attributes="0"/>
+                              <Component id="jButton1" min="-2" pref="130" max="-2" attributes="0"/>
+                              <EmptySpace min="27" pref="27" max="-2" attributes="0"/>
+                          </Group>
+                      </Group>
+                  </Group>
               </Group>
           </Group>
       </Group>
@@ -34,10 +51,15 @@
       <Group type="103" groupAlignment="0" attributes="0">
           <Group type="102" alignment="1" attributes="0">
               <EmptySpace max="-2" attributes="0"/>
-              <Component id="jLabel3" max="32767" attributes="0"/>
+              <Component id="jLabel3" min="-2" pref="44" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
               <Component id="jTabbedPane1" min="-2" pref="537" max="-2" attributes="0"/>
-              <EmptySpace min="-2" pref="51" max="-2" attributes="0"/>
+              <EmptySpace type="separate" max="-2" attributes="0"/>
+              <Group type="103" groupAlignment="3" attributes="0">
+                  <Component id="jButton1" alignment="3" min="-2" pref="51" max="-2" attributes="0"/>
+                  <Component id="jButton6" alignment="3" min="-2" pref="51" max="-2" attributes="0"/>
+              </Group>
+              <EmptySpace max="32767" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -103,12 +125,6 @@
                               <EmptySpace max="32767" attributes="0"/>
                           </Group>
                           <Group type="102" alignment="0" attributes="0">
-                              <Component id="jLabel10" min="-2" pref="130" max="-2" attributes="0"/>
-                              <EmptySpace max="32767" attributes="0"/>
-                              <Component id="jLabel14" min="-2" pref="154" max="-2" attributes="0"/>
-                              <EmptySpace min="-2" pref="203" max="-2" attributes="0"/>
-                          </Group>
-                          <Group type="102" alignment="0" attributes="0">
                               <Component id="jButton5" min="-2" pref="130" max="-2" attributes="0"/>
                               <EmptySpace max="-2" attributes="0"/>
                               <Component id="jButton2" min="-2" pref="130" max="-2" attributes="0"/>
@@ -117,6 +133,12 @@
                               <EmptySpace type="unrelated" max="-2" attributes="0"/>
                               <Component id="jButton4" min="-2" pref="130" max="-2" attributes="0"/>
                               <EmptySpace min="-2" pref="66" max="-2" attributes="0"/>
+                          </Group>
+                          <Group type="102" alignment="0" attributes="0">
+                              <Component id="jLabel10" min="-2" pref="130" max="-2" attributes="0"/>
+                              <EmptySpace max="32767" attributes="0"/>
+                              <Component id="jLabel14" min="-2" pref="154" max="-2" attributes="0"/>
+                              <EmptySpace min="-2" pref="184" max="-2" attributes="0"/>
                           </Group>
                       </Group>
                   </Group>
@@ -333,119 +355,106 @@
                   <Layout>
                     <DimensionLayout dim="0">
                       <Group type="103" groupAlignment="0" attributes="0">
-                          <Component id="jScrollPane8" alignment="0" max="32767" attributes="0"/>
-                          <Group type="102" alignment="0" attributes="0">
-                              <EmptySpace min="-2" pref="30" max="-2" attributes="0"/>
-                              <Group type="103" groupAlignment="0" attributes="0">
-                                  <Component id="jPanel26" alignment="0" min="-2" max="-2" attributes="0"/>
-                                  <Component id="jPanel27" alignment="0" min="-2" max="-2" attributes="0"/>
-                                  <Component id="jPanel28" alignment="0" min="-2" max="-2" attributes="0"/>
-                                  <Component id="jPanel29" alignment="0" min="-2" max="-2" attributes="0"/>
-                                  <Component id="jPanel30" alignment="0" min="-2" max="-2" attributes="0"/>
-                                  <Component id="jPanel36" alignment="0" min="-2" max="-2" attributes="0"/>
-                              </Group>
-                              <EmptySpace min="-2" pref="92" max="-2" attributes="0"/>
-                              <Group type="103" groupAlignment="0" attributes="0">
-                                  <Component id="jPanel31" alignment="0" min="-2" max="-2" attributes="0"/>
-                                  <Component id="jPanel32" alignment="0" min="-2" max="-2" attributes="0"/>
-                                  <Component id="jPanel33" alignment="0" min="-2" max="-2" attributes="0"/>
-                                  <Component id="jPanel34" alignment="0" min="-2" max="-2" attributes="0"/>
-                                  <Component id="jPanel35" alignment="0" min="-2" max="-2" attributes="0"/>
-                              </Group>
-                              <EmptySpace max="32767" attributes="0"/>
-                          </Group>
                           <Group type="102" attributes="0">
                               <Group type="103" groupAlignment="0" attributes="0">
-                                  <Component id="jLabel47" min="-2" pref="833" max="-2" attributes="0"/>
-                                  <Group type="103" alignment="0" groupAlignment="1" max="-2" attributes="0">
-                                      <Component id="jPanel5" alignment="0" max="32767" attributes="0"/>
-                                      <Component id="jPanel4" alignment="0" max="32767" attributes="0"/>
+                                  <Group type="102" alignment="0" attributes="0">
+                                      <EmptySpace min="-2" pref="30" max="-2" attributes="0"/>
+                                      <Group type="103" groupAlignment="0" attributes="0">
+                                          <Component id="p1" alignment="0" min="-2" max="-2" attributes="0"/>
+                                          <Component id="p3" alignment="0" min="-2" max="-2" attributes="0"/>
+                                          <Component id="p5" alignment="0" min="-2" max="-2" attributes="0"/>
+                                          <Component id="p7" alignment="0" min="-2" max="-2" attributes="0"/>
+                                          <Component id="p9" alignment="0" min="-2" max="-2" attributes="0"/>
+                                          <Component id="p11" alignment="0" min="-2" max="-2" attributes="0"/>
+                                      </Group>
+                                      <EmptySpace min="-2" pref="92" max="-2" attributes="0"/>
+                                      <Group type="103" groupAlignment="0" attributes="0">
+                                          <Component id="p2" alignment="0" min="-2" max="-2" attributes="0"/>
+                                          <Component id="p4" alignment="0" min="-2" max="-2" attributes="0"/>
+                                          <Component id="p6" alignment="0" min="-2" max="-2" attributes="0"/>
+                                          <Component id="p8" alignment="0" min="-2" max="-2" attributes="0"/>
+                                          <Component id="p10" alignment="0" min="-2" max="-2" attributes="0"/>
+                                      </Group>
+                                  </Group>
+                                  <Group type="102" alignment="0" attributes="0">
+                                      <EmptySpace max="-2" attributes="0"/>
+                                      <Component id="jLabel47" min="-2" pref="833" max="-2" attributes="0"/>
+                                  </Group>
+                                  <Group type="102" alignment="0" attributes="0">
+                                      <EmptySpace max="-2" attributes="0"/>
+                                      <Component id="jLabel35" min="-2" pref="812" max="-2" attributes="0"/>
+                                  </Group>
+                                  <Group type="102" alignment="0" attributes="0">
+                                      <EmptySpace max="-2" attributes="0"/>
+                                      <Component id="Contenedor" min="-2" max="-2" attributes="0"/>
                                   </Group>
                               </Group>
-                              <EmptySpace min="0" pref="377" max="32767" attributes="0"/>
+                              <EmptySpace pref="1007" max="32767" attributes="0"/>
                           </Group>
                       </Group>
                     </DimensionLayout>
                     <DimensionLayout dim="1">
                       <Group type="103" groupAlignment="0" attributes="0">
                           <Group type="102" alignment="0" attributes="0">
-                              <Component id="jScrollPane8" min="-2" max="-2" attributes="0"/>
-                              <EmptySpace min="-2" pref="5" max="-2" attributes="0"/>
+                              <EmptySpace min="-2" pref="20" max="-2" attributes="0"/>
+                              <Component id="jLabel35" min="-2" pref="24" max="-2" attributes="0"/>
+                              <EmptySpace max="-2" attributes="0"/>
                               <Group type="103" groupAlignment="0" attributes="0">
                                   <Group type="102" alignment="0" attributes="0">
-                                      <Component id="jPanel26" min="-2" max="-2" attributes="0"/>
+                                      <Component id="p1" min="-2" max="-2" attributes="0"/>
                                       <EmptySpace min="-2" pref="5" max="-2" attributes="0"/>
-                                      <Component id="jPanel27" min="-2" max="-2" attributes="0"/>
+                                      <Component id="p3" min="-2" max="-2" attributes="0"/>
                                       <EmptySpace min="-2" pref="5" max="-2" attributes="0"/>
-                                      <Component id="jPanel28" min="-2" max="-2" attributes="0"/>
+                                      <Component id="p5" min="-2" max="-2" attributes="0"/>
                                       <EmptySpace min="-2" pref="5" max="-2" attributes="0"/>
-                                      <Component id="jPanel29" min="-2" max="-2" attributes="0"/>
+                                      <Component id="p7" min="-2" max="-2" attributes="0"/>
                                       <EmptySpace min="-2" pref="5" max="-2" attributes="0"/>
-                                      <Component id="jPanel30" min="-2" max="-2" attributes="0"/>
+                                      <Component id="p9" min="-2" max="-2" attributes="0"/>
                                       <EmptySpace min="-2" pref="5" max="-2" attributes="0"/>
-                                      <Component id="jPanel36" min="-2" max="-2" attributes="0"/>
+                                      <Component id="p11" min="-2" max="-2" attributes="0"/>
                                   </Group>
                                   <Group type="102" alignment="0" attributes="0">
-                                      <Component id="jPanel31" min="-2" max="-2" attributes="0"/>
+                                      <Component id="p2" min="-2" max="-2" attributes="0"/>
                                       <EmptySpace min="-2" pref="5" max="-2" attributes="0"/>
-                                      <Component id="jPanel32" min="-2" max="-2" attributes="0"/>
+                                      <Component id="p4" min="-2" max="-2" attributes="0"/>
                                       <EmptySpace min="-2" pref="5" max="-2" attributes="0"/>
-                                      <Component id="jPanel33" min="-2" max="-2" attributes="0"/>
+                                      <Component id="p6" min="-2" max="-2" attributes="0"/>
                                       <EmptySpace min="-2" pref="5" max="-2" attributes="0"/>
-                                      <Component id="jPanel34" min="-2" max="-2" attributes="0"/>
+                                      <Component id="p8" min="-2" max="-2" attributes="0"/>
                                       <EmptySpace min="-2" pref="5" max="-2" attributes="0"/>
-                                      <Component id="jPanel35" min="-2" max="-2" attributes="0"/>
+                                      <Component id="p10" min="-2" max="-2" attributes="0"/>
                                   </Group>
                               </Group>
-                              <EmptySpace max="-2" attributes="0"/>
+                              <EmptySpace type="separate" max="-2" attributes="0"/>
                               <Component id="jLabel47" min="-2" max="-2" attributes="0"/>
                               <EmptySpace max="-2" attributes="0"/>
-                              <Component id="jPanel4" min="-2" max="-2" attributes="0"/>
-                              <EmptySpace max="-2" attributes="0"/>
-                              <Component id="jPanel5" min="-2" max="-2" attributes="0"/>
-                              <EmptySpace min="0" pref="91" max="32767" attributes="0"/>
+                              <Component id="Contenedor" min="-2" max="-2" attributes="0"/>
+                              <EmptySpace min="0" pref="131" max="32767" attributes="0"/>
                           </Group>
                       </Group>
                     </DimensionLayout>
                   </Layout>
                   <SubComponents>
-                    <Container class="javax.swing.JScrollPane" name="jScrollPane8">
-
-                      <Layout class="org.netbeans.modules.form.compat2.layouts.support.JScrollPaneSupportLayout"/>
-                      <SubComponents>
-                        <Component class="javax.swing.JLabel" name="jLabel35">
-                          <Properties>
-                            <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-                              <Font name="SansSerif" size="18" style="1"/>
-                            </Property>
-                            <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-                              <Color blue="0" green="66" red="33" type="rgb"/>
-                            </Property>
-                            <Property name="text" type="java.lang.String" value="Acceso a Pantalla"/>
-                          </Properties>
-                        </Component>
-                      </SubComponents>
-                    </Container>
-                    <Container class="javax.swing.JPanel" name="jPanel26">
+                    <Container class="javax.swing.JPanel" name="p1">
 
                       <Layout>
                         <DimensionLayout dim="0">
                           <Group type="103" groupAlignment="0" attributes="0">
                               <Group type="102" alignment="0" attributes="0">
                                   <EmptySpace min="-2" pref="27" max="-2" attributes="0"/>
-                                  <Component id="jLabel36" min="-2" pref="128" max="-2" attributes="0"/>
+                                  <Component id="lblEscritorio" min="-2" pref="128" max="-2" attributes="0"/>
                                   <EmptySpace pref="141" max="32767" attributes="0"/>
                               </Group>
                           </Group>
                         </DimensionLayout>
                         <DimensionLayout dim="1">
                           <Group type="103" groupAlignment="0" attributes="0">
-                              <Component id="jLabel36" alignment="0" pref="38" max="32767" attributes="0"/>
+                              <Component id="lblEscritorio" alignment="0" pref="38" max="32767" attributes="0"/>
                           </Group>
                         </DimensionLayout>
                       </Layout>
                       <SubComponents>
-                        <Component class="javax.swing.JLabel" name="jLabel36">
+                        <Component class="javax.swing.JLabel" name="lblEscritorio">
                           <Properties>
                             <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
                               <Font name="SansSerif" size="14" style="1"/>
@@ -455,26 +464,26 @@
                         </Component>
                       </SubComponents>
                     </Container>
-                    <Container class="javax.swing.JPanel" name="jPanel27">
+                    <Container class="javax.swing.JPanel" name="p3">
 
                       <Layout>
                         <DimensionLayout dim="0">
                           <Group type="103" groupAlignment="0" attributes="0">
                               <Group type="102" alignment="0" attributes="0">
                                   <EmptySpace min="-2" pref="27" max="-2" attributes="0"/>
-                                  <Component id="jLabel37" min="-2" pref="128" max="-2" attributes="0"/>
+                                  <Component id="lblRegistro" min="-2" pref="128" max="-2" attributes="0"/>
                                   <EmptySpace pref="141" max="32767" attributes="0"/>
                               </Group>
                           </Group>
                         </DimensionLayout>
                         <DimensionLayout dim="1">
                           <Group type="103" groupAlignment="0" attributes="0">
-                              <Component id="jLabel37" alignment="0" pref="38" max="32767" attributes="0"/>
+                              <Component id="lblRegistro" alignment="0" pref="38" max="32767" attributes="0"/>
                           </Group>
                         </DimensionLayout>
                       </Layout>
                       <SubComponents>
-                        <Component class="javax.swing.JLabel" name="jLabel37">
+                        <Component class="javax.swing.JLabel" name="lblRegistro">
                           <Properties>
                             <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
                               <Font name="SansSerif" size="14" style="1"/>
@@ -484,26 +493,26 @@
                         </Component>
                       </SubComponents>
                     </Container>
-                    <Container class="javax.swing.JPanel" name="jPanel28">
+                    <Container class="javax.swing.JPanel" name="p5">
 
                       <Layout>
                         <DimensionLayout dim="0">
                           <Group type="103" groupAlignment="0" attributes="0">
                               <Group type="102" alignment="0" attributes="0">
                                   <EmptySpace min="-2" pref="27" max="-2" attributes="0"/>
-                                  <Component id="jLabel38" min="-2" max="-2" attributes="0"/>
+                                  <Component id="lblRR" min="-2" max="-2" attributes="0"/>
                                   <EmptySpace pref="121" max="32767" attributes="0"/>
                               </Group>
                           </Group>
                         </DimensionLayout>
                         <DimensionLayout dim="1">
                           <Group type="103" groupAlignment="0" attributes="0">
-                              <Component id="jLabel38" alignment="0" pref="38" max="32767" attributes="0"/>
+                              <Component id="lblRR" alignment="0" pref="38" max="32767" attributes="0"/>
                           </Group>
                         </DimensionLayout>
                       </Layout>
                       <SubComponents>
-                        <Component class="javax.swing.JLabel" name="jLabel38">
+                        <Component class="javax.swing.JLabel" name="lblRR">
                           <Properties>
                             <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
                               <Font name="SansSerif" size="14" style="1"/>
@@ -513,26 +522,26 @@
                         </Component>
                       </SubComponents>
                     </Container>
-                    <Container class="javax.swing.JPanel" name="jPanel29">
+                    <Container class="javax.swing.JPanel" name="p7">
 
                       <Layout>
                         <DimensionLayout dim="0">
                           <Group type="103" groupAlignment="0" attributes="0">
                               <Group type="102" alignment="0" attributes="0">
                                   <EmptySpace min="-2" pref="27" max="-2" attributes="0"/>
-                                  <Component id="jLabel39" min="-2" pref="128" max="-2" attributes="0"/>
+                                  <Component id="lblCotizacion" min="-2" pref="128" max="-2" attributes="0"/>
                                   <EmptySpace pref="141" max="32767" attributes="0"/>
                               </Group>
                           </Group>
                         </DimensionLayout>
                         <DimensionLayout dim="1">
                           <Group type="103" groupAlignment="0" attributes="0">
-                              <Component id="jLabel39" alignment="0" pref="38" max="32767" attributes="0"/>
+                              <Component id="lblCotizacion" alignment="0" pref="38" max="32767" attributes="0"/>
                           </Group>
                         </DimensionLayout>
                       </Layout>
                       <SubComponents>
-                        <Component class="javax.swing.JLabel" name="jLabel39">
+                        <Component class="javax.swing.JLabel" name="lblCotizacion">
                           <Properties>
                             <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
                               <Font name="SansSerif" size="14" style="1"/>
@@ -542,26 +551,26 @@
                         </Component>
                       </SubComponents>
                     </Container>
-                    <Container class="javax.swing.JPanel" name="jPanel30">
+                    <Container class="javax.swing.JPanel" name="p9">
 
                       <Layout>
                         <DimensionLayout dim="0">
                           <Group type="103" groupAlignment="0" attributes="0">
                               <Group type="102" alignment="0" attributes="0">
                                   <EmptySpace min="-2" pref="27" max="-2" attributes="0"/>
-                                  <Component id="jLabel40" min="-2" pref="128" max="-2" attributes="0"/>
+                                  <Component id="lblUsuarios" min="-2" pref="128" max="-2" attributes="0"/>
                                   <EmptySpace pref="141" max="32767" attributes="0"/>
                               </Group>
                           </Group>
                         </DimensionLayout>
                         <DimensionLayout dim="1">
                           <Group type="103" groupAlignment="0" attributes="0">
-                              <Component id="jLabel40" alignment="0" pref="38" max="32767" attributes="0"/>
+                              <Component id="lblUsuarios" alignment="0" pref="38" max="32767" attributes="0"/>
                           </Group>
                         </DimensionLayout>
                       </Layout>
                       <SubComponents>
-                        <Component class="javax.swing.JLabel" name="jLabel40">
+                        <Component class="javax.swing.JLabel" name="lblUsuarios">
                           <Properties>
                             <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
                               <Font name="SansSerif" size="14" style="1"/>
@@ -571,26 +580,26 @@
                         </Component>
                       </SubComponents>
                     </Container>
-                    <Container class="javax.swing.JPanel" name="jPanel31">
+                    <Container class="javax.swing.JPanel" name="p2">
 
                       <Layout>
                         <DimensionLayout dim="0">
                           <Group type="103" groupAlignment="0" attributes="0">
                               <Group type="102" alignment="0" attributes="0">
                                   <EmptySpace min="-2" pref="27" max="-2" attributes="0"/>
-                                  <Component id="jLabel41" min="-2" pref="128" max="-2" attributes="0"/>
+                                  <Component id="lblPac" min="-2" pref="128" max="-2" attributes="0"/>
                                   <EmptySpace pref="141" max="32767" attributes="0"/>
                               </Group>
                           </Group>
                         </DimensionLayout>
                         <DimensionLayout dim="1">
                           <Group type="103" groupAlignment="0" attributes="0">
-                              <Component id="jLabel41" alignment="0" pref="38" max="32767" attributes="0"/>
+                              <Component id="lblPac" alignment="0" pref="38" max="32767" attributes="0"/>
                           </Group>
                         </DimensionLayout>
                       </Layout>
                       <SubComponents>
-                        <Component class="javax.swing.JLabel" name="jLabel41">
+                        <Component class="javax.swing.JLabel" name="lblPac">
                           <Properties>
                             <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
                               <Font name="SansSerif" size="14" style="1"/>
@@ -600,26 +609,26 @@
                         </Component>
                       </SubComponents>
                     </Container>
-                    <Container class="javax.swing.JPanel" name="jPanel32">
+                    <Container class="javax.swing.JPanel" name="p4">
 
                       <Layout>
                         <DimensionLayout dim="0">
                           <Group type="103" groupAlignment="0" attributes="0">
                               <Group type="102" alignment="0" attributes="0">
                                   <EmptySpace min="-2" pref="27" max="-2" attributes="0"/>
-                                  <Component id="jLabel42" min="-2" pref="128" max="-2" attributes="0"/>
+                                  <Component id="lblNA" min="-2" pref="128" max="-2" attributes="0"/>
                                   <EmptySpace pref="141" max="32767" attributes="0"/>
                               </Group>
                           </Group>
                         </DimensionLayout>
                         <DimensionLayout dim="1">
                           <Group type="103" groupAlignment="0" attributes="0">
-                              <Component id="jLabel42" alignment="0" pref="38" max="32767" attributes="0"/>
+                              <Component id="lblNA" alignment="0" pref="38" max="32767" attributes="0"/>
                           </Group>
                         </DimensionLayout>
                       </Layout>
                       <SubComponents>
-                        <Component class="javax.swing.JLabel" name="jLabel42">
+                        <Component class="javax.swing.JLabel" name="lblNA">
                           <Properties>
                             <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
                               <Font name="SansSerif" size="14" style="1"/>
@@ -629,26 +638,26 @@
                         </Component>
                       </SubComponents>
                     </Container>
-                    <Container class="javax.swing.JPanel" name="jPanel33">
+                    <Container class="javax.swing.JPanel" name="p6">
 
                       <Layout>
                         <DimensionLayout dim="0">
                           <Group type="103" groupAlignment="0" attributes="0">
                               <Group type="102" alignment="0" attributes="0">
                                   <EmptySpace min="-2" pref="27" max="-2" attributes="0"/>
-                                  <Component id="jLabel43" min="-2" max="-2" attributes="0"/>
+                                  <Component id="lblCE" min="-2" max="-2" attributes="0"/>
                                   <EmptySpace pref="109" max="32767" attributes="0"/>
                               </Group>
                           </Group>
                         </DimensionLayout>
                         <DimensionLayout dim="1">
                           <Group type="103" groupAlignment="0" attributes="0">
-                              <Component id="jLabel43" alignment="0" pref="38" max="32767" attributes="0"/>
+                              <Component id="lblCE" alignment="0" pref="38" max="32767" attributes="0"/>
                           </Group>
                         </DimensionLayout>
                       </Layout>
                       <SubComponents>
-                        <Component class="javax.swing.JLabel" name="jLabel43">
+                        <Component class="javax.swing.JLabel" name="lblCE">
                           <Properties>
                             <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
                               <Font name="SansSerif" size="14" style="1"/>
@@ -658,26 +667,26 @@
                         </Component>
                       </SubComponents>
                     </Container>
-                    <Container class="javax.swing.JPanel" name="jPanel34">
+                    <Container class="javax.swing.JPanel" name="p8">
 
                       <Layout>
                         <DimensionLayout dim="0">
                           <Group type="103" groupAlignment="0" attributes="0">
                               <Group type="102" alignment="0" attributes="0">
                                   <EmptySpace min="-2" pref="27" max="-2" attributes="0"/>
-                                  <Component id="jLabel44" min="-2" pref="128" max="-2" attributes="0"/>
+                                  <Component id="lblPagos" min="-2" pref="128" max="-2" attributes="0"/>
                                   <EmptySpace pref="141" max="32767" attributes="0"/>
                               </Group>
                           </Group>
                         </DimensionLayout>
                         <DimensionLayout dim="1">
                           <Group type="103" groupAlignment="0" attributes="0">
-                              <Component id="jLabel44" alignment="0" pref="38" max="32767" attributes="0"/>
+                              <Component id="lblPagos" alignment="0" pref="38" max="32767" attributes="0"/>
                           </Group>
                         </DimensionLayout>
                       </Layout>
                       <SubComponents>
-                        <Component class="javax.swing.JLabel" name="jLabel44">
+                        <Component class="javax.swing.JLabel" name="lblPagos">
                           <Properties>
                             <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
                               <Font name="SansSerif" size="14" style="1"/>
@@ -687,26 +696,26 @@
                         </Component>
                       </SubComponents>
                     </Container>
-                    <Container class="javax.swing.JPanel" name="jPanel35">
+                    <Container class="javax.swing.JPanel" name="p10">
 
                       <Layout>
                         <DimensionLayout dim="0">
                           <Group type="103" groupAlignment="0" attributes="0">
                               <Group type="102" alignment="0" attributes="0">
                                   <EmptySpace min="-2" pref="27" max="-2" attributes="0"/>
-                                  <Component id="jLabel45" min="-2" pref="128" max="-2" attributes="0"/>
+                                  <Component id="lblEstadisticas" min="-2" pref="128" max="-2" attributes="0"/>
                                   <EmptySpace pref="141" max="32767" attributes="0"/>
                               </Group>
                           </Group>
                         </DimensionLayout>
                         <DimensionLayout dim="1">
                           <Group type="103" groupAlignment="0" attributes="0">
-                              <Component id="jLabel45" alignment="0" pref="38" max="32767" attributes="0"/>
+                              <Component id="lblEstadisticas" alignment="0" pref="38" max="32767" attributes="0"/>
                           </Group>
                         </DimensionLayout>
                       </Layout>
                       <SubComponents>
-                        <Component class="javax.swing.JLabel" name="jLabel45">
+                        <Component class="javax.swing.JLabel" name="lblEstadisticas">
                           <Properties>
                             <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
                               <Font name="SansSerif" size="14" style="1"/>
@@ -716,26 +725,26 @@
                         </Component>
                       </SubComponents>
                     </Container>
-                    <Container class="javax.swing.JPanel" name="jPanel36">
+                    <Container class="javax.swing.JPanel" name="p11">
 
                       <Layout>
                         <DimensionLayout dim="0">
                           <Group type="103" groupAlignment="0" attributes="0">
                               <Group type="102" alignment="0" attributes="0">
                                   <EmptySpace min="-2" pref="27" max="-2" attributes="0"/>
-                                  <Component id="jLabel46" min="-2" pref="128" max="-2" attributes="0"/>
+                                  <Component id="lblConf" min="-2" pref="128" max="-2" attributes="0"/>
                                   <EmptySpace pref="141" max="32767" attributes="0"/>
                               </Group>
                           </Group>
                         </DimensionLayout>
                         <DimensionLayout dim="1">
                           <Group type="103" groupAlignment="0" attributes="0">
-                              <Component id="jLabel46" alignment="0" pref="38" max="32767" attributes="0"/>
+                              <Component id="lblConf" alignment="0" pref="38" max="32767" attributes="0"/>
                           </Group>
                         </DimensionLayout>
                       </Layout>
                       <SubComponents>
-                        <Component class="javax.swing.JLabel" name="jLabel46">
+                        <Component class="javax.swing.JLabel" name="lblConf">
                           <Properties>
                             <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
                               <Font name="SansSerif" size="14" style="1"/>
@@ -756,104 +765,32 @@
                         <Property name="text" type="java.lang.String" value="Permisos por examen"/>
                       </Properties>
                     </Component>
-                    <Container class="javax.swing.JPanel" name="jPanel4">
+                    <Container class="javax.swing.JPanel" name="Contenedor">
 
                       <Layout>
                         <DimensionLayout dim="0">
                           <Group type="103" groupAlignment="0" attributes="0">
-                              <Group type="102" alignment="1" attributes="0">
-                                  <EmptySpace pref="285" max="32767" attributes="0"/>
-                                  <Component id="jLabel49" min="-2" pref="128" max="-2" attributes="0"/>
-                                  <EmptySpace min="-2" pref="84" max="-2" attributes="0"/>
-                                  <Component id="jLabel50" min="-2" pref="128" max="-2" attributes="0"/>
-                                  <EmptySpace min="-2" pref="61" max="-2" attributes="0"/>
-                                  <Component id="jLabel48" min="-2" pref="128" max="-2" attributes="0"/>
-                              </Group>
-                              <Group type="103" rootIndex="1" groupAlignment="0" attributes="0">
-                                  <Group type="102" alignment="0" attributes="0">
-                                      <EmptySpace min="-2" pref="57" max="-2" attributes="0"/>
-                                      <Component id="jLabel51" min="-2" pref="128" max="-2" attributes="0"/>
-                                      <EmptySpace pref="629" max="32767" attributes="0"/>
-                                  </Group>
-                              </Group>
+                              <EmptySpace min="0" pref="814" max="32767" attributes="0"/>
                           </Group>
                         </DimensionLayout>
                         <DimensionLayout dim="1">
                           <Group type="103" groupAlignment="0" attributes="0">
-                              <Group type="103" groupAlignment="3" attributes="0">
-                                  <Component id="jLabel48" alignment="3" min="-2" pref="64" max="-2" attributes="0"/>
-                                  <Component id="jLabel50" alignment="3" max="32767" attributes="0"/>
-                                  <Component id="jLabel49" alignment="3" max="32767" attributes="0"/>
-                              </Group>
-                              <Group type="103" rootIndex="1" groupAlignment="0" attributes="0">
-                                  <Group type="102" attributes="0">
-                                      <EmptySpace max="-2" attributes="0"/>
-                                      <Component id="jLabel51" pref="38" max="32767" attributes="0"/>
-                                      <EmptySpace max="-2" attributes="0"/>
-                                  </Group>
-                              </Group>
+                              <EmptySpace min="0" pref="126" max="32767" attributes="0"/>
                           </Group>
                         </DimensionLayout>
                       </Layout>
-                      <SubComponents>
-                        <Component class="javax.swing.JLabel" name="jLabel48">
-                          <Properties>
-                            <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-                              <Font name="SansSerif" size="14" style="1"/>
-                            </Property>
-                            <Property name="text" type="java.lang.String" value="Cargar"/>
-                          </Properties>
-                        </Component>
-                        <Component class="javax.swing.JLabel" name="jLabel49">
-                          <Properties>
-                            <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-                              <Font name="SansSerif" size="14" style="1"/>
-                            </Property>
-                            <Property name="text" type="java.lang.String" value="Sin acceso"/>
-                          </Properties>
-                        </Component>
-                        <Component class="javax.swing.JLabel" name="jLabel50">
-                          <Properties>
-                            <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-                              <Font name="SansSerif" size="14" style="1"/>
-                            </Property>
-                            <Property name="text" type="java.lang.String" value="Solo ver"/>
-                          </Properties>
-                        </Component>
-                        <Component class="javax.swing.JLabel" name="jLabel51">
-                          <Properties>
-                            <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-                              <Font name="SansSerif" size="14" style="1"/>
-                            </Property>
-                            <Property name="text" type="java.lang.String" value="Examen"/>
-                          </Properties>
-                        </Component>
-                      </SubComponents>
                     </Container>
-                    <Container class="javax.swing.JPanel" name="jPanel5">
-
-                      <Layout>
-                        <DimensionLayout dim="0">
-                          <Group type="103" groupAlignment="0" attributes="0">
-                              <Component id="jScrollPane2" alignment="0" pref="0" max="32767" attributes="0"/>
-                          </Group>
-                        </DimensionLayout>
-                        <DimensionLayout dim="1">
-                          <Group type="103" groupAlignment="0" attributes="0">
-                              <Group type="102" alignment="0" attributes="0">
-                                  <Component id="jScrollPane2" min="-2" pref="113" max="-2" attributes="0"/>
-                                  <EmptySpace min="0" pref="13" max="32767" attributes="0"/>
-                              </Group>
-                          </Group>
-                        </DimensionLayout>
-                      </Layout>
-                      <SubComponents>
-                        <Container class="javax.swing.JScrollPane" name="jScrollPane2">
-
-                          <Layout class="org.netbeans.modules.form.compat2.layouts.support.JScrollPaneSupportLayout"/>
-                        </Container>
-                      </SubComponents>
-                    </Container>
+                    <Component class="javax.swing.JLabel" name="jLabel35">
+                      <Properties>
+                        <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+                          <Font name="SansSerif" size="18" style="1"/>
+                        </Property>
+                        <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+                          <Color blue="0" green="66" red="33" type="rgb"/>
+                        </Property>
+                        <Property name="text" type="java.lang.String" value="Acceso a Pantalla"/>
+                      </Properties>
+                    </Component>
                   </SubComponents>
                 </Container>
               </SubComponents>
@@ -862,5 +799,15 @@
         </Container>
       </SubComponents>
     </Container>
+    <Component class="javax.swing.JButton" name="jButton1">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Guardar"/>
+      </Properties>
+    </Component>
+    <Component class="javax.swing.JButton" name="jButton6">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Cancelar"/>
+      </Properties>
+    </Component>
   </SubComponents>
 </Form>

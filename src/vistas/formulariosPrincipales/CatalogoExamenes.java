@@ -36,6 +36,7 @@ public class CatalogoExamenes extends javax.swing.JPanel {
     public CatalogoExamenes() {
         initComponents();
         aplicarEstilos();
+        jButton1.addActionListener(evt -> abrirNuevoExamen());
     }
 
     /**
@@ -96,6 +97,27 @@ public class CatalogoExamenes extends javax.swing.JPanel {
                 + "borderColor: #DCE1E6;"
                 + "focusedBorderColor: #1E513B"
         );
+    }
+
+    /**
+     * Abre "Nuevo Examen" ({@link vistas.catalogoExamenes.CrearNuevoExamen}) como ventana
+     * flotante (modal), centrada sobre esta pantalla -- mismo criterio que
+     * {@link Usuarios#abrirNuevoUsuario()} con "Nuevo Usuario".
+     */
+    private void abrirNuevoExamen() {
+        vistas.catalogoExamenes.CrearNuevoExamen panel = new vistas.catalogoExamenes.CrearNuevoExamen();
+
+        javax.swing.JDialog dialogo = new javax.swing.JDialog(
+                javax.swing.SwingUtilities.getWindowAncestor(this),
+                "Nuevo Examen",
+                java.awt.Dialog.ModalityType.APPLICATION_MODAL);
+
+        panel.getBotonCancelar().addActionListener(evt -> dialogo.dispose());
+
+        dialogo.getContentPane().add(panel);
+        dialogo.pack();
+        dialogo.setLocationRelativeTo(this);
+        dialogo.setVisible(true);
     }
 
     /**

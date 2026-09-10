@@ -6,18 +6,18 @@ import java.sql.SQLException;
 
 /**
  * Clase utilitaria encargada de abrir la conexión JDBC contra la base de datos MySQL
- * "laboratorio" (localhost:3306).
+ * "Lab_LB" (localhost:3306).
  */
 public class Conexion {
 
-    private static final String URL = "jdbc:mysql://localhost:3306/laboratorio"; 
+    private static final String URL = "jdbc:mysql://localhost:3306/Lab_LB";
     private static final String USER = "root"; 
     private static final String PASSWORD = ""; 
 
   /**
    * Registra el driver JDBC de MySQL (probando primero el moderno {@code
    * com.mysql.cj.jdbc.Driver} y, si no está disponible, el driver legado {@code
-   * com.mysql.jdbc.Driver}) y abre una conexión a la base de datos "laboratorio" usando los
+   * com.mysql.jdbc.Driver}) y abre una conexión a la base de datos "Lab_LB" usando los
    * parámetros definidos en {@link #URL}, {@link #USER} y {@link #PASSWORD}.
    *
    * @return la {@link Connection} abierta, o {@code null} si no se

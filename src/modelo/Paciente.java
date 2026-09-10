@@ -15,9 +15,6 @@ public class Paciente {
     private int idSexo;
     private String telefono;
     private String email;
-    private Integer idPlan;
-    private String nroAfiliado;
-    private int idRegistradoPor;
 
     private String nombreObraSocial;
     private Date ultimoExamen;
@@ -97,30 +94,6 @@ public class Paciente {
 
     public void setEmail(String email) {
         this.email = email;
-    }
-
-    public Integer getIdPlan() {
-        return idPlan;
-    }
-
-    public void setIdPlan(Integer idPlan) {
-        this.idPlan = idPlan;
-    }
-
-    public String getNroAfiliado() {
-        return nroAfiliado;
-    }
-
-    public void setNroAfiliado(String nroAfiliado) {
-        this.nroAfiliado = nroAfiliado;
-    }
-
-    public int getIdRegistradoPor() {
-        return idRegistradoPor;
-    }
-
-    public void setIdRegistradoPor(int idRegistradoPor) {
-        this.idRegistradoPor = idRegistradoPor;
     }
 
     public String getNombreObraSocial() {

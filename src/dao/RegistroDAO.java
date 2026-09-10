@@ -16,18 +16,23 @@ public class RegistroDAO {
 
     /**
      * SELECT base compartido por listarTodos(), listarPendientes() y listarPorPaciente(): trae
-     * numero de orden, paciente, examen, fecha, cobertura, estado y prioridad del pedido.
+     * numero de orden, paciente, examen, fecha, cobertura, estado y prioridad del pedido. La
+     * cobertura sale de `pagos.id_obra_social` del pedido puntual (no de la lista de obras
+     * sociales del paciente), igual que en {@link EscritorioDAO}.
      */
     private static final String SELECT_BASE =
-            "SELECT pa.id_pedido_analisis, pa.id_analisis_tipo, pe.numero_pedido, p.dni_paciente, p.nya_paciente, at.nombre_analisis, " +
-            "pe.fecha_pedido, pa.estado_analisis, pe.prioridad_pedido, os.nombre_obra_social, " +
+            "SELECT pa.id_pedido_analisis, pa.id_analisis_tipo, pe.numero_pedido, p.dni_paciente, " +
+            "p.nya_paciente, at.nombre_analisis, " +
+            "pe.fecha_pedido, pa.estado_analisis, pe.prioridad_pedido, " +
+            "(SELECT os.nombre_obra_social FROM pagos pg " +
+            "   JOIN obras_sociales os ON os.id_obra_social = pg.id_obra_social " +
+            "   WHERE pg.id_pedido = pe.id_pedido AND pg.anulado_pago = 0 AND pg.id_obra_social IS NOT NULL " +
+            "   LIMIT 1) AS nombre_obra_social, " +
             "(SELECT COUNT(*) FROM envios e WHERE e.id_pedido = pe.id_pedido) AS cant_envios " +
             "FROM pedido_analisis pa " +
             "JOIN pedidos pe ON pe.id_pedido = pa.id_pedido " +
             "JOIN pacientes p ON p.id_paciente = pe.id_paciente " +
-            "JOIN analisis_tipos at ON at.id_analisis_tipo = pa.id_analisis_tipo " +
-            "LEFT JOIN planes_obra_social plan ON plan.id_plan = p.id_plan " +
-            "LEFT JOIN obras_sociales os ON os.id_obra_social = plan.id_obra_social ";
+            "JOIN analisis_tipos at ON at.id_analisis_tipo = pa.id_analisis_tipo ";
 
     public static List<OrdenResumen> listarTodos(Connection conexion) {
         return listar(conexion, SELECT_BASE + "ORDER BY pa.created_at DESC");

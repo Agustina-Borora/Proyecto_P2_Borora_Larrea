@@ -250,24 +250,24 @@ public class EscritorioDetalledeOrden extends javax.swing.JPanel {
         setBackground(new java.awt.Color(255, 255, 255));
         setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        jLabel1.setFont(new java.awt.Font("SansSerif", 1, 30)); // NOI18N
-        jLabel1.setForeground(new java.awt.Color(51, 102, 0));
+        jLabel1.setFont(new java.awt.Font("SansSerif", 1, 18)); // NOI18N
         jLabel1.setText("Detalle de Orden ");
         add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(12, 28, -1, -1));
 
-        jLabel3.setFont(new java.awt.Font("SansSerif", 1, 30)); // NOI18N
-        jLabel3.setForeground(new java.awt.Color(51, 102, 0));
-        add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(265, 28, 106, 39));
+        jLabel3.setFont(new java.awt.Font("SansSerif", 1, 18)); // NOI18N
+        add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(170, 30, 200, 20));
 
         jLabel4.setFont(new java.awt.Font("SansSerif", 1, 18)); // NOI18N
         jLabel4.setForeground(new java.awt.Color(77, 104, 21));
         jLabel4.setText("Edad");
         add(jLabel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(748, 197, 60, 37));
         add(jLabel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(812, 77, 90, 44));
-        add(jLabel6, new org.netbeans.lib.awtextra.AbsoluteConstraints(12, 77, 140, 37));
+
+        jLabel6.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
+        add(jLabel6, new org.netbeans.lib.awtextra.AbsoluteConstraints(12, 77, 150, 30));
 
         jLabel2.setFont(new java.awt.Font("SansSerif", 1, 22)); // NOI18N
-        jLabel2.setForeground(new java.awt.Color(51, 102, 0));
+        jLabel2.setForeground(new java.awt.Color(40, 110, 75));
         jLabel2.setText("Paciente");
         add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 128, -1, -1));
 

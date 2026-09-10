@@ -3,12 +3,13 @@ package modelo;
 import java.math.BigDecimal;
 
 /**
- * Modelo (POJO) para una fila de la tabla `nomenclador` (el catálogo de prestaciones/códigos
- * que se cargó desde el Excel): código, nombre y unidades bioquímicas.
+ * Modelo (POJO) para una fila de la tabla `prestaciones` (el catálogo de prestaciones/códigos
+ * que se cargó desde el Excel; antes se llamaba `nomenclador`): código, nombre y unidades
+ * bioquímicas.
  */
 public class Prestacion {
 
-    private int idNomenclador;
+    private int idPrestacion;
     private int codigo;
     private String nombrePrestacion;
     private BigDecimal unidadesBioquimicas;
@@ -16,19 +17,19 @@ public class Prestacion {
     public Prestacion() {
     }
 
-    public Prestacion(int idNomenclador, int codigo, String nombrePrestacion, BigDecimal unidadesBioquimicas) {
-        this.idNomenclador = idNomenclador;
+    public Prestacion(int idPrestacion, int codigo, String nombrePrestacion, BigDecimal unidadesBioquimicas) {
+        this.idPrestacion = idPrestacion;
         this.codigo = codigo;
         this.nombrePrestacion = nombrePrestacion;
         this.unidadesBioquimicas = unidadesBioquimicas;
     }
 
-    public int getIdNomenclador() {
-        return idNomenclador;
+    public int getIdPrestacion() {
+        return idPrestacion;
     }
 
-    public void setIdNomenclador(int idNomenclador) {
-        this.idNomenclador = idNomenclador;
+    public void setIdPrestacion(int idPrestacion) {
+        this.idPrestacion = idPrestacion;
     }
 
     public int getCodigo() {

@@ -18,11 +18,12 @@ public class PedidoDAO {
      * momento del INSERT.
      */
     public static PedidoCreado crearPedido(Connection con, int idPaciente, Integer idMedico, int idRegistradoPor) {
+        // total_pedido queda en 0 (su DEFAULT) hasta que la pantalla de Nuevo Análisis calcule el
+        // total en UB y lo pase para acá -- todavía no está conectada esa parte.
         String numeroTemporal = "TMP-" + System.currentTimeMillis();
         String sqlInsert = "INSERT INTO pedidos "
-                + "(numero_pedido, id_paciente, id_medico, id_registrado_por, fecha_pedido, estado_pedido, prioridad_pedido, "
-                + "subtotal, total_cobrado, total_obra_social, total_paciente, created_at) "
-                + "VALUES (?, ?, ?, ?, CURDATE(), 'pendiente', 'normal', 0, 0, 0, 0, NOW())";
+                + "(numero_pedido, id_paciente, id_medico, id_registrado_por, fecha_pedido, estado_pedido, prioridad_pedido, created_at) "
+                + "VALUES (?, ?, ?, ?, CURDATE(), 'pendiente', 'normal', NOW())";
 
         int idPedido;
         try (PreparedStatement ps = con.prepareStatement(sqlInsert, Statement.RETURN_GENERATED_KEYS)) {
@@ -67,8 +68,8 @@ public class PedidoDAO {
      * Agrega una fila a pedido_analisis para uno de los análisis elegidos en la orden.
      */
     public static boolean agregarAnalisis(Connection con, int idPedido, int idAnalisisTipo) {
-        String sql = "INSERT INTO pedido_analisis (id_pedido, id_analisis_tipo, precio_aplicado, estado_analisis, created_at) "
-                + "VALUES (?, ?, 0, 'pendiente', NOW())";
+        String sql = "INSERT INTO pedido_analisis (id_pedido, id_analisis_tipo, estado_analisis, created_at) "
+                + "VALUES (?, ?, 'pendiente', NOW())";
         try (PreparedStatement ps = con.prepareStatement(sql)) {
             ps.setInt(1, idPedido);
             ps.setInt(2, idAnalisisTipo);

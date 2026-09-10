@@ -8,13 +8,11 @@ import java.sql.Statement;
 import modelo.Prestacion;
 
 /**
- * El nomenclador (catálogo de códigos importado del Excel) y analisis_tipos (lo que realmente
- * usa pedido_analisis) son dos tablas sin relación directa -- ver la revisión de 3FN que
- * hicimos antes.
+ * `prestaciones` (el catálogo importado del Excel) y `analisis_tipos` (lo que realmente usa
+ * pedido_analisis) son tablas relacionadas por código: `analisis_tipos.codigo_analisis` es FK
+ * directa a `prestaciones.codigo`.
  */
 public class AnalisisTipoDAO {
-
-    private static final String CATEGORIA_SIN_CLASIFICAR = "Sin Clasificar (Nomenclador)";
 
     /**
      * Busca el analisis_tipo que corresponde a esta prestación del nomenclador, creándolo si hace
@@ -30,17 +28,13 @@ public class AnalisisTipoDAO {
             return idPorNombre;
         }
 
-        Integer idCategoria = obtenerOCrearCategoriaSinClasificar(con);
-        if (idCategoria == null) {
-            return null;
-        }
-        return crear(con, prestacion, idCategoria);
+        return crear(con, prestacion);
     }
 
     private static Integer buscarPorCodigo(Connection con, int codigo) {
         String sql = "SELECT id_analisis_tipo FROM analisis_tipos WHERE codigo_analisis = ?";
         try (PreparedStatement ps = con.prepareStatement(sql)) {
-            ps.setString(1, String.valueOf(codigo));
+            ps.setInt(1, codigo);
             try (ResultSet rs = ps.executeQuery()) {
                 if (rs.next()) {
                     return rs.getInt("id_analisis_tipo");
@@ -67,14 +61,12 @@ public class AnalisisTipoDAO {
         return null;
     }
 
-    private static Integer crear(Connection con, Prestacion prestacion, int idCategoria) {
-        String sql = "INSERT INTO analisis_tipos "
-                + "(codigo_analisis, nombre_analisis, id_categoria, precio_base, activo_analisis, created_at) "
-                + "VALUES (?, ?, ?, 0, 1, NOW())";
+    private static Integer crear(Connection con, Prestacion prestacion) {
+        String sql = "INSERT INTO analisis_tipos (codigo_analisis, nombre_analisis, activo_analisis, created_at) "
+                + "VALUES (?, ?, 1, NOW())";
         try (PreparedStatement ps = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
-            ps.setString(1, String.valueOf(prestacion.getCodigo()));
+            ps.setInt(1, prestacion.getCodigo());
             ps.setString(2, prestacion.getNombrePrestacion());
-            ps.setInt(3, idCategoria);
             if (ps.executeUpdate() == 0) {
                 return null;
             }
@@ -89,45 +81,26 @@ public class AnalisisTipoDAO {
         return null;
     }
 
-    private static Integer obtenerOCrearCategoriaSinClasificar(Connection con) {
-        String sqlBuscar = "SELECT id_categoria FROM categorias_analisis WHERE nombre_categoria = ?";
-        try (PreparedStatement ps = con.prepareStatement(sqlBuscar)) {
-            ps.setString(1, CATEGORIA_SIN_CLASIFICAR);
-            try (ResultSet rs = ps.executeQuery()) {
-                if (rs.next()) {
-                    return rs.getInt("id_categoria");
-                }
+    /**
+     * Devuelve todos los análisis activos, ordenados por nombre -- se usa para listar los
+     * exámenes en la tabla de permisos por examen (Nuevo Usuario).
+     */
+    public static java.util.List<modelo.AnalisisTipo> listarTodos(Connection conexion) {
+        java.util.List<modelo.AnalisisTipo> tipos = new java.util.ArrayList<>();
+        String sql = "SELECT id_analisis_tipo, nombre_analisis FROM analisis_tipos "
+                + "WHERE activo_analisis = 1 ORDER BY nombre_analisis";
+
+        try (Statement st = conexion.createStatement();
+             ResultSet rs = st.executeQuery(sql)) {
+
+            while (rs.next()) {
+                tipos.add(new modelo.AnalisisTipo(rs.getInt("id_analisis_tipo"), rs.getString("nombre_analisis")));
             }
+
         } catch (SQLException e) {
-            Mensajes.error("Error al buscar la categoría \"Sin Clasificar\"", e);
-            return null;
+            Mensajes.error("Error al listar los exámenes", e);
         }
 
-        int siguienteOrden = 1;
-        String sqlMax = "SELECT COALESCE(MAX(orden_categoria), 0) + 1 AS siguiente FROM categorias_analisis";
-        try (Statement st = con.createStatement();
-             ResultSet rs = st.executeQuery(sqlMax)) {
-            if (rs.next()) {
-                siguienteOrden = rs.getInt("siguiente");
-            }
-        } catch (SQLException e) {
-        }
-
-        String sqlInsert = "INSERT INTO categorias_analisis (nombre_categoria, orden_categoria) VALUES (?, ?)";
-        try (PreparedStatement ps = con.prepareStatement(sqlInsert, Statement.RETURN_GENERATED_KEYS)) {
-            ps.setString(1, CATEGORIA_SIN_CLASIFICAR);
-            ps.setInt(2, siguienteOrden);
-            if (ps.executeUpdate() == 0) {
-                return null;
-            }
-            try (ResultSet claves = ps.getGeneratedKeys()) {
-                if (claves.next()) {
-                    return claves.getInt(1);
-                }
-            }
-        } catch (SQLException e) {
-            Mensajes.error("Error al crear la categoría \"Sin Clasificar\"", e);
-        }
-        return null;
+        return tipos;
     }
 }

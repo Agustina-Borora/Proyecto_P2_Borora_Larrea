@@ -78,6 +78,26 @@ private final java.util.List<modelo.Prestacion> seleccionados = new java.util.Ar
 private String coberturaActual = "PARTICULAR";
 
 /**
+ * Se avisa cada vez que cambia la lista de prestaciones agregadas (alta o vaciado completo),
+ * para que NuevoAnalisis recalcule el total.
+ */
+public interface SeleccionListener {
+    void onSeleccionCambiada();
+}
+
+private final java.util.List<SeleccionListener> listenersSeleccion = new java.util.ArrayList<>();
+
+public void addSeleccionListener(SeleccionListener listener) {
+    listenersSeleccion.add(listener);
+}
+
+private void avisarSeleccionCambiada() {
+    for (SeleccionListener listener : listenersSeleccion) {
+        listener.onSeleccionCambiada();
+    }
+}
+
+/**
  * Busca en el nomenclador lo que haya en el campo Codigo/Nombre: si arranca con un dígito se
  * busca por código exacto (un solo resultado posible), si arranca con una letra se busca por
  * nombre (puede traer más de uno).
@@ -114,6 +134,7 @@ private void agregarAnalisis() {
     }
 
     jTextField1.setText("");
+    avisarSeleccionCambiada();
 }
 
 private boolean yaAgregado(int codigo) {
@@ -149,6 +170,7 @@ public void limpiarSeleccion() {
     javax.swing.table.DefaultTableModel modeloTabla = (javax.swing.table.DefaultTableModel) jTable1.getModel();
     modeloTabla.setRowCount(0);
     jTextField1.setText("");
+    avisarSeleccionCambiada();
 }
 
 /**

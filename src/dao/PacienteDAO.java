@@ -19,9 +19,8 @@ public class PacienteDAO {
      */
     public static Integer insertar(Connection conexion, Paciente paciente) {
         String sql = "INSERT INTO pacientes " +
-                "(nya_paciente, dni_paciente, fecha_nacimiento, id_sexo, telefono_paciente, " +
-                "email_paciente, id_plan, nro_afiliado, id_registrado_por) " +
-                "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                "(nya_paciente, dni_paciente, fecha_nacimiento, id_sexo, telefono_paciente, email_paciente) " +
+                "VALUES (?, ?, ?, ?, ?, ?)";
 
         try (PreparedStatement ps = conexion.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             ps.setString(1, paciente.getNyaPaciente());
@@ -31,13 +30,6 @@ public class PacienteDAO {
             ps.setInt(4, paciente.getIdSexo());
             ps.setString(5, paciente.getTelefono());
             ps.setString(6, paciente.getEmail());
-            if (paciente.getIdPlan() != null) {
-                ps.setInt(7, paciente.getIdPlan());
-            } else {
-                ps.setNull(7, java.sql.Types.INTEGER);
-            }
-            ps.setString(8, paciente.getNroAfiliado());
-            ps.setInt(9, paciente.getIdRegistradoPor());
 
             if (ps.executeUpdate() == 0) {
                 return null;
@@ -60,7 +52,7 @@ public class PacienteDAO {
      */
     public static boolean actualizar(Connection conexion, Paciente paciente) {
         String sql = "UPDATE pacientes SET nya_paciente = ?, dni_paciente = ?, fecha_nacimiento = ?, " +
-                "id_sexo = ?, telefono_paciente = ?, email_paciente = ?, id_plan = ?, nro_afiliado = ? " +
+                "id_sexo = ?, telefono_paciente = ?, email_paciente = ? " +
                 "WHERE id_paciente = ?";
 
         try (PreparedStatement ps = conexion.prepareStatement(sql)) {
@@ -71,13 +63,7 @@ public class PacienteDAO {
             ps.setInt(4, paciente.getIdSexo());
             ps.setString(5, paciente.getTelefono());
             ps.setString(6, paciente.getEmail());
-            if (paciente.getIdPlan() != null) {
-                ps.setInt(7, paciente.getIdPlan());
-            } else {
-                ps.setNull(7, java.sql.Types.INTEGER);
-            }
-            ps.setString(8, paciente.getNroAfiliado());
-            ps.setInt(9, paciente.getIdPaciente());
+            ps.setInt(7, paciente.getIdPaciente());
 
             return ps.executeUpdate() > 0;
 
@@ -124,16 +110,20 @@ public class PacienteDAO {
     }
 
     /**
-     * Devuelve todos los pacientes cargados, ordenados por nombre.
+     * Devuelve todos los pacientes cargados, ordenados por apellido y nombre. La "obra social"
+     * mostrada es la lista de todas las que tiene asociadas el paciente (puede tener varias,
+     * vía `paciente_obra_social`), separadas por coma; null si no tiene ninguna.
      */
     public static List<Paciente> listarTodos(Connection conexion) {
         List<Paciente> pacientes = new ArrayList<>();
         String sql =
-                "SELECT p.*, os.nombre_obra_social, " +
+                "SELECT p.*, " +
+                "(SELECT GROUP_CONCAT(os.nombre_obra_social SEPARATOR ', ') " +
+                "   FROM paciente_obra_social pos " +
+                "   JOIN obras_sociales os ON os.id_obra_social = pos.id_obra_social " +
+                "   WHERE pos.id_paciente = p.id_paciente) AS nombre_obra_social, " +
                 "(SELECT MAX(pe.fecha_pedido) FROM pedidos pe WHERE pe.id_paciente = p.id_paciente) AS ultimo_examen " +
                 "FROM pacientes p " +
-                "LEFT JOIN planes_obra_social plan ON plan.id_plan = p.id_plan " +
-                "LEFT JOIN obras_sociales os ON os.id_obra_social = plan.id_obra_social " +
                 "ORDER BY p.nya_paciente";
 
         try (Statement st = conexion.createStatement();
@@ -165,10 +155,6 @@ public class PacienteDAO {
         p.setIdSexo(rs.getInt("id_sexo"));
         p.setTelefono(rs.getString("telefono_paciente"));
         p.setEmail(rs.getString("email_paciente"));
-        int idPlan = rs.getInt("id_plan");
-        p.setIdPlan(rs.wasNull() ? null : idPlan);
-        p.setNroAfiliado(rs.getString("nro_afiliado"));
-        p.setIdRegistradoPor(rs.getInt("id_registrado_por"));
         return p;
     }
 }

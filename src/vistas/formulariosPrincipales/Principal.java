@@ -223,25 +223,25 @@ public Principal() {
         setUndecorated(true);
 
         panelBorder1.setBackground(new java.awt.Color(246, 255, 249));
-        panelBorder1.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
-        panelBorder1.add(menu1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, -1, 870));
+        panelBorder1.setLayout(null);
+        panelBorder1.add(menu1);
+        menu1.setBounds(0, 0, 278, 831);
 
         contenedor.setBackground(new java.awt.Color(246, 255, 249));
         contenedor.setOpaque(false);
         contenedor.setLayout(new java.awt.BorderLayout());
-        panelBorder1.add(contenedor, new org.netbeans.lib.awtextra.AbsoluteConstraints(280, 0, 1030, 870));
+        panelBorder1.add(contenedor);
+        contenedor.setBounds(280, 0, 1030, 890);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addComponent(panelBorder1, javax.swing.GroupLayout.DEFAULT_SIZE, 1314, Short.MAX_VALUE)
-                .addGap(0, 0, 0))
+            .addComponent(panelBorder1, javax.swing.GroupLayout.PREFERRED_SIZE, 1314, javax.swing.GroupLayout.PREFERRED_SIZE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(panelBorder1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(panelBorder1, javax.swing.GroupLayout.PREFERRED_SIZE, 851, javax.swing.GroupLayout.PREFERRED_SIZE)
         );
 
         pack();
