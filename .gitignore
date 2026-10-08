@@ -17,3 +17,5 @@ email.properties
 # Sistema
 Thumbs.db
 .DS_Store
+preferencias_sistema.properties
+sql/

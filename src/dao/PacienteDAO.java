@@ -19,8 +19,8 @@ public class PacienteDAO {
      */
     public static Integer insertar(Connection conexion, Paciente paciente) {
         String sql = "INSERT INTO pacientes " +
-                "(nya_paciente, dni_paciente, fecha_nacimiento, id_sexo, telefono_paciente, email_paciente) " +
-                "VALUES (?, ?, ?, ?, ?, ?)";
+                "(nya_paciente, dni_paciente, fecha_nacimiento, id_sexo, telefono_paciente, email_paciente, " +
+                "activo_paciente) VALUES (?, ?, ?, ?, ?, ?, 1)";
 
         try (PreparedStatement ps = conexion.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             ps.setString(1, paciente.getNyaPaciente());
@@ -36,7 +36,10 @@ public class PacienteDAO {
             }
             try (ResultSet claves = ps.getGeneratedKeys()) {
                 if (claves.next()) {
-                    return claves.getInt(1);
+                    int idGenerado = claves.getInt(1);
+                    AuditoriaDAO.registrar(conexion, modelo.Sesion.idUsuario, "ALTA", "pacientes", idGenerado,
+                            "Paciente creado: " + paciente.getNyaPaciente() + " (DNI " + paciente.getDni() + ")");
+                    return idGenerado;
                 }
             }
             return null;
@@ -65,7 +68,12 @@ public class PacienteDAO {
             ps.setString(6, paciente.getEmail());
             ps.setInt(7, paciente.getIdPaciente());
 
-            return ps.executeUpdate() > 0;
+            boolean ok = ps.executeUpdate() > 0;
+            if (ok) {
+                AuditoriaDAO.registrar(conexion, modelo.Sesion.idUsuario, "EDICION", "pacientes",
+                        paciente.getIdPaciente(), "Datos actualizados de " + paciente.getNyaPaciente());
+            }
+            return ok;
 
         } catch (SQLException e) {
             Mensajes.error("Error al actualizar el paciente", e);
@@ -74,14 +82,26 @@ public class PacienteDAO {
     }
 
     /**
-     * Elimina un paciente por id.
+     * "Elimina" un paciente por id -- borrado lógico (columna `activo_paciente`, migración
+     * sql/2026-09-29_pacientes_borrado_logico.sql), no un DELETE real: un laboratorio no puede
+     * perder el historial de órdenes/resultados de un paciente sólo porque se lo "elimina" de la
+     * pantalla Pacientes, y un DELETE físico corre ese riesgo (falla o borra en cadena, según cómo
+     * queden las FK hacia esta tabla el día de mañana). Mismo criterio que ya usan
+     * {@code UsuarioDAO#desactivar} y {@code ObraSocialDAO#desactivar}. El paciente deja de
+     * aparecer en {@link #listarTodos}, pero sigue siendo encontrable por
+     * {@link #buscarPorDni}/{@link #buscarPorId} (a propósito -- ver el javadoc de esos métodos).
      */
     public static boolean eliminar(Connection conexion, int idPaciente) {
-        String sql = "DELETE FROM pacientes WHERE id_paciente = ?";
+        String sql = "UPDATE pacientes SET activo_paciente = 0 WHERE id_paciente = ?";
 
         try (PreparedStatement ps = conexion.prepareStatement(sql)) {
             ps.setInt(1, idPaciente);
-            return ps.executeUpdate() > 0;
+            boolean ok = ps.executeUpdate() > 0;
+            if (ok) {
+                AuditoriaDAO.registrar(conexion, modelo.Sesion.idUsuario, "BAJA", "pacientes", idPaciente,
+                        "Paciente dado de baja (id " + idPaciente + ")");
+            }
+            return ok;
 
         } catch (SQLException e) {
             Mensajes.error("Error al eliminar el paciente", e);
@@ -90,7 +110,10 @@ public class PacienteDAO {
     }
 
     /**
-     * Busca un paciente por DNI.
+     * Busca un paciente por DNI. No filtra por `activo_paciente` a propósito: lo usan Nuevo Análisis
+     * y Registrar Resultados para encontrar/reutilizar al paciente de una orden, y un paciente
+     * "eliminado" (borrado lógico, ver {@link #eliminar}) puede seguir teniendo órdenes viejas que
+     * hay que poder mostrar igual.
      */
     public static Paciente buscarPorDni(Connection conexion, String dni) {
         String sql = "SELECT * FROM pacientes WHERE dni_paciente = ?";
@@ -110,9 +133,33 @@ public class PacienteDAO {
     }
 
     /**
-     * Devuelve todos los pacientes cargados, ordenados por apellido y nombre. La "obra social"
-     * mostrada es la lista de todas las que tiene asociadas el paciente (puede tener varias,
-     * vía `paciente_obra_social`), separadas por coma; null si no tiene ninguna.
+     * Busca un paciente por id_paciente -- lo usa "Editar Orden" (Registros) para traer el
+     * paciente completo (con fecha_nacimiento e id_sexo, que esa pantalla no edita) antes de
+     * pisarle solo nombre/DNI/celular/email y guardarlo con {@link #actualizar}. Tampoco filtra
+     * por `activo_paciente` -- mismo motivo que {@link #buscarPorDni}.
+     */
+    public static Paciente buscarPorId(Connection conexion, int idPaciente) {
+        String sql = "SELECT * FROM pacientes WHERE id_paciente = ?";
+
+        try (PreparedStatement ps = conexion.prepareStatement(sql)) {
+            ps.setInt(1, idPaciente);
+
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return mapearPaciente(rs);
+                }
+            }
+        } catch (SQLException e) {
+            Mensajes.error("Error al buscar el paciente", e);
+        }
+        return null;
+    }
+
+    /**
+     * Devuelve todos los pacientes activos (no "eliminados", ver {@link #eliminar}), ordenados por
+     * apellido y nombre. La "obra social" mostrada es la lista de todas las que tiene asociadas el
+     * paciente (puede tener varias, vía `paciente_obra_social`), separadas por coma; null si no
+     * tiene ninguna.
      */
     public static List<Paciente> listarTodos(Connection conexion) {
         List<Paciente> pacientes = new ArrayList<>();
@@ -124,6 +171,7 @@ public class PacienteDAO {
                 "   WHERE pos.id_paciente = p.id_paciente) AS nombre_obra_social, " +
                 "(SELECT MAX(pe.fecha_pedido) FROM pedidos pe WHERE pe.id_paciente = p.id_paciente) AS ultimo_examen " +
                 "FROM pacientes p " +
+                "WHERE p.activo_paciente = 1 " +
                 "ORDER BY p.nya_paciente";
 
         try (Statement st = conexion.createStatement();
@@ -155,6 +203,7 @@ public class PacienteDAO {
         p.setIdSexo(rs.getInt("id_sexo"));
         p.setTelefono(rs.getString("telefono_paciente"));
         p.setEmail(rs.getString("email_paciente"));
+        p.setActivo(rs.getInt("activo_paciente") == 1);
         return p;
     }
 }

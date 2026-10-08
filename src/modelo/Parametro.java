@@ -1,5 +1,8 @@
 package modelo;
 
+import java.util.Collections;
+import java.util.List;
+
 /**
  * POJO para una fila de `analisis_parametros`: un renglón de resultado dentro de un
  * analisis_tipo (ej. "Hemoglobina" dentro de "Hemograma completo").
@@ -15,6 +18,14 @@ public class Parametro {
     private String valorReferencia;
     private Integer idSexo; // null = aplica a cualquier sexo
     private String opcionesCualitativo;
+
+    /**
+     * Los mismos tramos de {@link #valorReferencia} pero ya separados por color (ver
+     * {@link utilidades.TramosTextoUtil#parsear}), para poder mostrarlos/imprimirlos coloreados.
+     * {@link #valorReferencia} sigue siendo el texto plano (sin marcadores de color) para no
+     * romper el cálculo de Normal/Alto/Bajo por expresión regular.
+     */
+    private List<TramoTexto> tramosReferencia = Collections.emptyList();
 
     public int getIdParametro() {
         return idParametro;
@@ -86,5 +97,13 @@ public class Parametro {
 
     public void setOpcionesCualitativo(String opcionesCualitativo) {
         this.opcionesCualitativo = opcionesCualitativo;
+    }
+
+    public List<TramoTexto> getTramosReferencia() {
+        return tramosReferencia;
+    }
+
+    public void setTramosReferencia(List<TramoTexto> tramosReferencia) {
+        this.tramosReferencia = tramosReferencia == null ? Collections.emptyList() : tramosReferencia;
     }
 }

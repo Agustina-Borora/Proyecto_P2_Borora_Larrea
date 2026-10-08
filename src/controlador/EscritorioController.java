@@ -38,4 +38,14 @@ public final class EscritorioController {
                 con -> dao.EscritorioDAO.buscarDetalleOrden(con, idPedidoAnalisis),
                 null);
     }
+
+    /**
+     * Trae las órdenes con resultado pendiente de carga hace más de {@code diasMinimo} días, para
+     * la alerta del Escritorio (Mes 6: Alertas).
+     */
+    public static List<OrdenResumen> listarResultadosPendientesHaceRato(Component padre, int diasMinimo) {
+        return ConexionUtil.ejecutar(padre, "Error al listar los resultados pendientes",
+                con -> dao.EscritorioDAO.listarResultadosPendientesHaceRato(con, diasMinimo),
+                Collections.emptyList());
+    }
 }

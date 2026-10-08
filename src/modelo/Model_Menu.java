@@ -1,8 +1,5 @@
 package modelo;
 
-import vistas.menu.EventMenuSelected;
-import vistas.menu.ListMenu;
-import vistas.menu.MenuItem;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Image;
@@ -24,7 +21,7 @@ public class Model_Menu {
     }
 
     /**
-     * Identificador estable de navegación que usa {@link vistas.formulariosPrincipales.Principal#navegar}
+     * Identificador estable de navegación que usa {@link vistas.javafx.shell.AppShell#navegar}
      * para decidir qué pantalla abrir. Es independiente del nombre del ícono, para poder cambiar
      * el ícono de una opción sin afectar a qué pantalla lleva.
      */
@@ -130,8 +127,8 @@ public class Model_Menu {
     /**
      * Rol que cumple un {@link Model_Menu} dentro de la lista del menú lateral: <ul> <li>{@link
      * #TITLE} — encabezado de sección, no es clickeable.</li> <li>{@link #MENU} — opción de
-     * navegación real, dispara {@link EventMenuSelected}.</li> <li>{@link #EMPTY} —
-     * espacio/separador vacío entre secciones.</li> </ul>
+     * navegación real.</li> <li>{@link #EMPTY} — espacio/separador vacío entre secciones.</li>
+     * </ul>
      */
     public static enum MenuType {
         TITLE, MENU, EMPTY

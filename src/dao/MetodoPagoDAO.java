@@ -18,7 +18,7 @@ public class MetodoPagoDAO {
      */
     public static List<String> listarNombres(Connection con) {
         List<String> nombres = new ArrayList<>();
-        String sql = "SELECT nombre_metodo FROM metodos_pago WHERE activo = 1 ORDER BY nombre_metodo";
+        String sql = "SELECT nombre_metodo FROM metodos_pago WHERE activo_metodo_pago = 1 ORDER BY nombre_metodo";
 
         try (Statement st = con.createStatement();
              ResultSet rs = st.executeQuery(sql)) {

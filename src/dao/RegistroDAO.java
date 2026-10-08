@@ -77,6 +77,49 @@ public class RegistroDAO {
         return ordenes;
     }
 
+    /**
+     * Actualiza el médico derivante del pedido entero (no de un análisis puntual) -- lo usa
+     * "Editar Orden" (Registros). idMedico puede venir null (médico derivante opcional).
+     */
+    public static boolean actualizarMedicoPedido(Connection conexion, int idPedido, Integer idMedico) {
+        String sql = "UPDATE pedidos SET id_medico = ? WHERE id_pedido = ?";
+
+        try (PreparedStatement ps = conexion.prepareStatement(sql)) {
+            if (idMedico == null) {
+                ps.setNull(1, java.sql.Types.INTEGER);
+            } else {
+                ps.setInt(1, idMedico);
+            }
+            ps.setInt(2, idPedido);
+            return ps.executeUpdate() > 0;
+
+        } catch (SQLException e) {
+            Mensajes.error("Error al actualizar el médico derivante", e);
+            return false;
+        }
+    }
+
+    /**
+     * Actualiza la observación de un análisis puntual -- lo usa "Editar Orden" (Registros).
+     * Requiere que ya se haya corrido sql/2026-09-24_envios_resultados.sql (agrega la columna
+     * pedido_analisis.observaciones); si no se corrió todavía, esta consulta falla con una
+     * SQLException que ConexionUtil ya muestra como cartel de error, sin romper el resto de la
+     * pantalla.
+     */
+    public static boolean actualizarObservaciones(Connection conexion, int idPedidoAnalisis, String observaciones) {
+        String sql = "UPDATE pedido_analisis SET observaciones = ? WHERE id_pedido_analisis = ?";
+
+        try (PreparedStatement ps = conexion.prepareStatement(sql)) {
+            ps.setString(1, observaciones == null || observaciones.trim().isEmpty() ? null : observaciones.trim());
+            ps.setInt(2, idPedidoAnalisis);
+            return ps.executeUpdate() > 0;
+
+        } catch (SQLException e) {
+            Mensajes.error("Error al actualizar la observación", e);
+            return false;
+        }
+    }
+
     private static List<OrdenResumen> listar(Connection conexion, String sql) {
         List<OrdenResumen> ordenes = new ArrayList<>();
 

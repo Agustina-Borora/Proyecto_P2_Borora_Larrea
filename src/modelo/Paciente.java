@@ -19,6 +19,13 @@ public class Paciente {
     private String nombreObraSocial;
     private Date ultimoExamen;
 
+    /**
+     * Borrado lógico (columna `activo_paciente`, migración
+     * sql/2026-09-29_pacientes_borrado_logico.sql): true salvo que se haya "eliminado" al paciente
+     * desde la pantalla Pacientes -- mismo criterio que ya usan Usuario, ObraSocial y Analito.
+     */
+    private boolean activo = true;
+
     public Paciente() {
     }
 
@@ -110,5 +117,13 @@ public class Paciente {
 
     public void setUltimoExamen(Date ultimoExamen) {
         this.ultimoExamen = ultimoExamen;
+    }
+
+    public boolean isActivo() {
+        return activo;
+    }
+
+    public void setActivo(boolean activo) {
+        this.activo = activo;
     }
 }

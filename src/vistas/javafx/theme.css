@@ -1,0 +1,803 @@
+.root {
+    -fx-font-family: "Segoe UI", "SansSerif";
+    -fx-accent: #1E5C3D;
+}
+
+/* Mes 8 (rediseño visual): fondo con un degradado suave en vez del verde parejo de antes -- se
+   nota sobre todo en las zonas de cada pantalla que quedan sin tarjetas encima. */
+.pantalla {
+    -fx-background-color: linear-gradient(from 0% 0% to 100% 100%, #F7FBF8 0%, #EFF5F1 55%, #E7F1EA 100%);
+    -fx-padding: 24;
+}
+
+.titulo-pantalla {
+    -fx-font-size: 24px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #141C19;
+}
+
+.subtitulo-pantalla {
+    -fx-font-size: 13px;
+    -fx-text-fill: #6E7874;
+}
+
+.titulo-seccion {
+    -fx-font-size: 17px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #141C19;
+}
+
+/* Mes 8 (rediseño visual): bajada chica debajo de un .titulo-seccion para explicar qué muestra
+   el gráfico/tabla de abajo -- se agregó en Estadísticas porque la clienta avisó que la torta de
+   "Exámenes más solicitados" "no se entiende" (no quedaba claro qué se estaba calculando). */
+.descripcion-seccion {
+    -fx-font-size: 12px;
+    -fx-text-fill: #6E7874;
+}
+
+/* Mes 8 (rediseño visual), tercera vuelta: texto de las referencias armadas a mano en
+   Estadísticas (ver EstadisticasScreen#crearItemLeyenda/#actualizarDesgloseExamenes) -- reemplazan
+   a la leyenda nativa de BarChart/PieChart, que dejaba de mostrar el texto (quedaba sólo el
+   cuadradito de color) cuando el gráfico tenía poco alto disponible. */
+.leyenda-grafico-texto {
+    -fx-font-size: 12.5px;
+    -fx-text-fill: #2B332F;
+}
+
+/* Colores fijos de "Análisis por mes" (ver EstadisticasScreen#armarGraficoPorMes) -- los mismos
+   colores que usa la referencia de abajo armada a mano, para que coincidan. */
+.analisis-por-mes .default-color0.chart-bar { -fx-bar-fill: #2563EB; }
+.analisis-por-mes .default-color1.chart-bar { -fx-bar-fill: #B9770E; }
+
+/* Colores fijos de cada porción de "Exámenes más solicitados" (ver
+   EstadisticasScreen#armarGraficoExamenes/#PALETA_TORTA) -- mismos colores, por índice, que usa
+   la lista de abajo armada a mano, para que coincidan. Hasta 6 exámenes distintos a la vez
+   (PALETA_TORTA.length); si hay más, el color se repite cada 6 (ver el "% PALETA_TORTA.length"
+   en #actualizarDesgloseExamenes) en vez de romperse. */
+.torta-examenes .data0.chart-pie { -fx-pie-color: #2563EB; }
+.torta-examenes .data1.chart-pie { -fx-pie-color: #237A4E; }
+.torta-examenes .data2.chart-pie { -fx-pie-color: #B9770E; }
+.torta-examenes .data3.chart-pie { -fx-pie-color: #C2412F; }
+.torta-examenes .data4.chart-pie { -fx-pie-color: #7C3AED; }
+.torta-examenes .data5.chart-pie { -fx-pie-color: #0D9488; }
+
+/* Mes 8 (rediseño visual): degradado + sombra en vez del verde liso de antes -- mismo recurso
+   que ya usaba el avatar del header (ver HeaderPanel), ahora también en el botón principal de
+   toda la app. */
+.boton-primario {
+    -fx-background-color: linear-gradient(to bottom right, #2C9463, #123B27);
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-font-size: 13px;
+    -fx-background-radius: 14;
+    -fx-padding: 10 22 10 22;
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(gaussian, rgba(18,59,39,0.35), 10, 0.15, 0, 3);
+}
+
+.boton-primario:hover {
+    -fx-background-color: linear-gradient(to bottom right, #33A571, #16452E);
+}
+
+.boton-secundario {
+    -fx-background-color: transparent;
+    -fx-text-fill: #1E5C3D;
+    -fx-border-color: #1E5C3D;
+    -fx-border-radius: 14;
+    -fx-background-radius: 14;
+    -fx-font-size: 13px;
+    -fx-padding: 9 21 9 21;
+    -fx-cursor: hand;
+}
+
+.boton-fila {
+    -fx-background-color: transparent;
+    -fx-text-fill: #1E5C3D;
+    -fx-font-size: 12px;
+    -fx-cursor: hand;
+}
+
+.boton-fila-eliminar {
+    -fx-text-fill: #B3261E;
+}
+
+/* Mes 8 (rediseño visual): una sombra suave le da un poco de profundidad a TODAS las tarjetas
+   de la app (Configuración, diálogos, etc. -- esta clase se reutiliza en un montón de pantallas),
+   antes quedaban completamente planas con sólo el borde finito de #E6E9E7. */
+.tarjeta {
+    -fx-background-color: white;
+    -fx-background-radius: 12;
+    -fx-border-color: #E6E9E7;
+    -fx-border-radius: 12;
+    -fx-padding: 16;
+    -fx-effect: dropshadow(gaussian, rgba(16,28,22,0.08), 16, 0, 0, 3);
+}
+
+.tarjeta-seleccionable {
+    -fx-cursor: hand;
+    -fx-border-width: 2;
+}
+
+.tarjeta-seleccionada {
+    -fx-background-color: #E4F5EA;
+    -fx-border-color: #1E5C3D;
+}
+
+/* Mes 8 (rediseño visual): "siento que las tablas se siguen apegando al diseño de Java Swing en
+   vez de web" -- lo que más delataba eso eran las líneas verticales finitas entre columnas (la
+   grilla de "planilla de cálculo" que JavaFX dibuja por defecto en cada TableView, algo que
+   ninguna tabla de una app web moderna tiene) y filas muy apretadas, con el texto casi pegado al
+   borde de cada celda. Se saca la grilla vertical por completo (-fx-table-cell-border-color
+   transparent), se agranda la altura de fila (-fx-fixed-cell-size, antes quedaba en lo que
+   JavaFX calculaba por defecto, bastante chico) y se le da más aire a cada celda con padding
+   explícito -- mismo criterio de "espacio en blanco generoso" que ya se usa en el resto de la
+   app (tarjetas, formularios). También se agrega un rayado sutil fila-sí/fila-no (":odd"), un
+   recurso típico de tablas web (Notion, Airtable, Google Sheets) que ayuda a seguir una fila
+   larga con la vista sin necesitar las líneas verticales. */
+.table-view {
+    -fx-background-color: white;
+    -fx-border-color: #E6E9E7;
+    -fx-border-radius: 12;
+    -fx-background-radius: 12;
+    -fx-table-cell-border-color: transparent;
+    -fx-fixed-cell-size: 46px;
+}
+
+.table-view .column-header-background {
+    -fx-background-color: #FAFBFA;
+    -fx-background-radius: 12 12 0 0;
+    -fx-border-color: transparent transparent #E9ECEA transparent;
+    -fx-border-width: 0 0 1 0;
+}
+
+.table-view .column-header {
+    -fx-background-color: transparent;
+    -fx-size: 42;
+}
+
+.table-view .column-header .label {
+    -fx-text-fill: #6B7C74;
+    -fx-font-weight: bold;
+    -fx-font-size: 11px;
+}
+
+.table-row-cell {
+    -fx-border-color: transparent transparent #F0F1EF transparent;
+    -fx-background-color: white;
+    -fx-table-cell-border-color: transparent;
+}
+
+.table-row-cell:odd {
+    -fx-background-color: #FAFBFA;
+}
+
+.table-row-cell .table-cell {
+    -fx-padding: 0 16 0 16;
+    -fx-font-size: 12.5px;
+    -fx-text-fill: #2B332F;
+    -fx-alignment: CENTER-LEFT;
+}
+
+/* Resalta la fila al pasar el mouse (antes no había ningún indicio visual hasta hacer clic) --
+   no se aplica si la fila ya está seleccionada, para no competir con ese color. */
+.table-row-cell:hover {
+    -fx-background-color: #F0FAF3;
+}
+
+.table-row-cell:selected {
+    -fx-background-color: #E4F5EA;
+    -fx-text-fill: #141C19;
+}
+
+.table-row-cell:selected:hover {
+    -fx-background-color: #DCF0E4;
+}
+
+.table-row-cell:selected .table-cell {
+    -fx-text-fill: #141C19;
+}
+
+.pill-activo {
+    -fx-background-color: #E4F5EA;
+    -fx-text-fill: #1E5C3D;
+    -fx-background-radius: 12;
+    -fx-padding: 3 12 3 12;
+    -fx-font-size: 11.5px;
+}
+
+.pill-inactivo {
+    -fx-background-color: #F0F1EF;
+    -fx-text-fill: #6E7874;
+    -fx-background-radius: 12;
+    -fx-padding: 3 12 3 12;
+    -fx-font-size: 11.5px;
+}
+
+.etiqueta-campo {
+    -fx-font-size: 12.5px;
+    -fx-text-fill: #3A423E;
+    -fx-font-weight: bold;
+}
+
+.campo-form {
+    -fx-background-color: white;
+    -fx-border-color: #DCE1E6;
+    -fx-border-radius: 10;
+    -fx-background-radius: 10;
+    -fx-padding: 8 12 8 12;
+    -fx-font-size: 13px;
+}
+
+.campo-form:focused {
+    -fx-border-color: #1E5C3D;
+}
+
+/* ---- Nuevo Análisis: Estudios solicitados (sugerencias de búsqueda y filas elegidas) ---- */
+
+.fila-sugerencia {
+    -fx-padding: 7 10 7 10;
+    -fx-background-color: white;
+    -fx-cursor: hand;
+}
+
+.fila-sugerencia:hover {
+    -fx-background-color: #F0FAF3;
+}
+
+.fila-estudio {
+    -fx-background-color: #F6FFF9;
+    -fx-background-radius: 8;
+    -fx-border-color: #E6E9E7;
+    -fx-border-radius: 8;
+    -fx-padding: 10 14 10 14;
+}
+
+.barra-total {
+    -fx-background-color: #E4F5EA;
+    -fx-background-radius: 8;
+    -fx-padding: 10 14 10 14;
+}
+
+.boton-primario:disabled {
+    -fx-background-color: #C7CFC9;
+    -fx-cursor: default;
+}
+
+/* ---- AppShell: ventana principal (header + sidebar + contenido), todo responsive ---- */
+
+.app-fondo {
+    -fx-background-color: #EAF3EC;
+}
+
+.app-card {
+    -fx-background-color: white;
+    -fx-background-radius: 18;
+    -fx-border-color: #E2E8E4;
+    -fx-border-radius: 18;
+}
+
+.app-header {
+    -fx-background-color: linear-gradient(to bottom, white 0%, #FBFDFC 100%);
+    -fx-background-radius: 18 18 0 0;
+    -fx-border-color: transparent transparent #EEF1EE transparent;
+    -fx-border-width: 0 0 1 0;
+}
+
+.buscador-header {
+    -fx-background-color: #F3F5F4;
+    -fx-background-radius: 20;
+    -fx-border-color: #E3E7E5;
+    -fx-border-radius: 20;
+    -fx-padding: 9 16 9 14;
+}
+
+/* Mes 8 (rediseño visual): resalte sutil al pasar el mouse por el buscador del header -- antes
+   no reaccionaba para nada hasta tocarlo. */
+.buscador-header:hover {
+    -fx-border-color: #2C9463;
+    -fx-effect: dropshadow(gaussian, rgba(44,148,99,0.18), 8, 0.3, 0, 0);
+}
+
+.campo-buscador-header {
+    -fx-background-color: transparent;
+    -fx-font-size: 12.5px;
+    -fx-padding: 0;
+}
+
+.campo-buscador-header:focused {
+    -fx-background-color: transparent;
+}
+
+.sidebar {
+    -fx-background-color: white;
+    -fx-background-radius: 0 0 0 18;
+    -fx-border-color: transparent #EEF1EE transparent transparent;
+    -fx-border-width: 0 1 0 0;
+}
+
+.sidebar-pie {
+    -fx-border-color: #EEF1EE transparent transparent transparent;
+    -fx-border-width: 1 0 0 0;
+}
+
+.sidebar-scroll {
+    -fx-background-color: transparent;
+    -fx-background: transparent;
+}
+
+.sidebar-scroll .viewport {
+    -fx-background-color: transparent;
+}
+
+.sidebar-scroll .scroll-bar:vertical {
+    -fx-pref-width: 8;
+}
+
+/* Configuración: el contenido de la pestaña activa va dentro de un ScrollPane (ver
+   ConfiguracionScreen#construir) para que baje en vez de cortarse cuando no entra en la altura de
+   la ventana -- mismo truco que .sidebar-scroll de acá arriba, transparente para que se siga
+   viendo el fondo #F6FFF9 de ".pantalla" en vez de un recuadro blanco alrededor. */
+.config-scroll {
+    -fx-background-color: transparent;
+    -fx-background: transparent;
+}
+
+.config-scroll .viewport {
+    -fx-background-color: transparent;
+}
+
+.config-scroll .scroll-bar:vertical {
+    -fx-pref-width: 8;
+}
+
+/* Mes 8 (rediseño visual): el área de contenido de TODA pantalla JavaFX pasa por acá (ver
+   AppShell#mostrarFx) -- antes cada pantalla iba directo en el StackPane central sin ScrollPane
+   propio, así que una con mucho contenido (Estadísticas con sus 4 gráficos/tablas fue el caso que
+   avisó la clienta: "se desborda ... no se puede ir para abajo") quedaba cortada sin forma de
+   bajar a ver el resto. Mismo truco transparente que .sidebar-scroll/.config-scroll de acá arriba
+   para que se siga viendo el fondo degradado de ".pantalla" en vez de un recuadro blanco. */
+.contenido-scroll {
+    -fx-background-color: transparent;
+    -fx-background: transparent;
+}
+
+.contenido-scroll .viewport {
+    -fx-background-color: transparent;
+}
+
+.contenido-scroll .scroll-bar:vertical {
+    -fx-pref-width: 8;
+}
+
+.sidebar-fila {
+    -fx-background-radius: 10;
+    -fx-cursor: hand;
+}
+
+.sidebar-fila:hover {
+    -fx-background-color: rgba(0, 0, 0, 0.05);
+}
+
+/* Mes 8 (rediseño visual): antes era un verde clarito liso con texto verde oscuro (ver
+   SidebarFila#aplicarColorTexto en AppShell.java, ahora en blanco porque el fondo es oscuro); el
+   degradado + la franja de acento a la izquierda vienen de la propuesta que aprobó la clienta. */
+.sidebar-fila-seleccionada {
+    -fx-background-color: linear-gradient(to bottom right, #1E5C3D, #0F3D28);
+    -fx-background-radius: 10;
+    -fx-border-color: transparent transparent transparent #2C9463;
+    -fx-border-width: 0 0 0 4;
+    -fx-border-radius: 10;
+    -fx-effect: dropshadow(gaussian, rgba(15,61,40,0.35), 10, 0.2, 0, 3);
+}
+
+.app-contenido {
+    -fx-background-color: #F6FFF9;
+    -fx-background-radius: 0 0 18 0;
+}
+
+/* ---- Pestañas simples (Pagos, Configuración): tira de pestañas con línea inferior ---- */
+
+.tab-item {
+    -fx-cursor: hand;
+    -fx-padding: 0 0 10 0;
+    -fx-border-color: transparent transparent transparent transparent;
+    -fx-border-width: 0 0 2 0;
+}
+
+.tab-item .label {
+    -fx-font-size: 13px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #8C9490;
+}
+
+.tab-item-activo {
+    -fx-border-color: transparent transparent #1E5C3D transparent;
+}
+
+.tab-item-activo .label {
+    -fx-text-fill: #1E5C3D;
+}
+
+.tab-badge {
+    -fx-background-color: #FDF1DC;
+    -fx-text-fill: #B9770E;
+    -fx-background-radius: 10;
+    -fx-padding: 2 9 2 9;
+    -fx-font-size: 11px;
+    -fx-font-weight: bold;
+}
+
+/* ---- Pagos: cobertura por pedido y desglose por obra social ---- */
+
+.pill-particular {
+    -fx-background-color: #F0F1EF;
+    -fx-text-fill: #6E7874;
+    -fx-background-radius: 12;
+    -fx-padding: 3 12 3 12;
+    -fx-font-size: 11.5px;
+}
+
+.pill-obra-social {
+    -fx-background-color: #FDF1DC;
+    -fx-text-fill: #B9770E;
+    -fx-background-radius: 12;
+    -fx-padding: 3 12 3 12;
+    -fx-font-size: 11.5px;
+}
+
+.pill-mixto {
+    -fx-background-color: #EFE7FB;
+    -fx-text-fill: #6B3FA0;
+    -fx-background-radius: 12;
+    -fx-padding: 3 12 3 12;
+    -fx-font-size: 11.5px;
+}
+
+/* ---- Registrar Resultados: estado de la orden (urgencia primero) ---- */
+
+.pill-urgente {
+    -fx-background-color: #FBE7E6;
+    -fx-text-fill: #B3261E;
+    -fx-background-radius: 12;
+    -fx-padding: 3 12 3 12;
+    -fx-font-size: 11.5px;
+    -fx-font-weight: bold;
+}
+
+.pill-procesando {
+    -fx-background-color: #E3F0FC;
+    -fx-text-fill: #1B5FA8;
+    -fx-background-radius: 12;
+    -fx-padding: 3 12 3 12;
+    -fx-font-size: 11.5px;
+}
+
+.pill-pendiente {
+    -fx-background-color: #FDF1DC;
+    -fx-text-fill: #B9770E;
+    -fx-background-radius: 12;
+    -fx-padding: 3 12 3 12;
+    -fx-font-size: 11.5px;
+}
+
+/* Botón de acción principal de una fila (por ejemplo "Cargar resultados" en Registrar
+   Resultados): más marcado que .boton-fila (que es solo texto) para que se note que es LA
+   acción a hacer en esa fila, sin ser tan grande como .boton-primario (que es para el título de
+   la pantalla, no para adentro de una tabla). */
+.boton-fila-primario {
+    -fx-background-color: #1E5C3D;
+    -fx-text-fill: white;
+    -fx-font-size: 12px;
+    -fx-font-weight: bold;
+    -fx-background-radius: 10;
+    -fx-padding: 6 14 6 14;
+    -fx-cursor: hand;
+}
+
+.boton-fila-primario:hover {
+    -fx-background-color: #16452E;
+}
+
+/* Botón chico solo-ícono para las columnas "Acciones" de una tabla (Ver/Editar de Registros):
+   mismo espíritu que .boton-fila pero sin texto, con un fondo circular sutil al pasar el mouse
+   para que se note que es clickeable. */
+.boton-fila-icono {
+    -fx-background-color: transparent;
+    -fx-cursor: hand;
+    -fx-padding: 5;
+    -fx-background-radius: 8;
+}
+
+.boton-fila-icono:hover {
+    -fx-background-color: #F0F1EF;
+}
+
+/* "Se enviará por..." de Enviar Resultados: fila con el ícono del canal, a quién/qué se manda y
+   si está listo o no. */
+.fila-canal-envio {
+    -fx-background-color: #F6F8F7;
+    -fx-background-radius: 10;
+    -fx-padding: 10 14 10 14;
+}
+
+.fila-canal-envio-deshabilitada {
+    -fx-background-color: #FAFAFA;
+    -fx-background-radius: 10;
+    -fx-padding: 10 14 10 14;
+    -fx-opacity: 0.6;
+}
+
+/* Cargar Resultados: campo numérico con algo que no es un número válido todavía. */
+.campo-invalido {
+    -fx-border-color: #B3261E;
+    -fx-background-color: #FBE7E6;
+}
+
+/* ---- Toasts (ver ToastUtil): cartel flotante abajo a la derecha, reemplaza los "✓ Guardado"
+   de texto fijo que había al lado de varios botones "Guardar cambios". ---- */
+.toast {
+    -fx-background-radius: 12;
+    -fx-padding: 12 20 12 20;
+    -fx-font-size: 13px;
+    -fx-font-weight: bold;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.25), 14, 0.15, 0, 4);
+}
+
+.toast-exito {
+    -fx-background-color: #1E5C3D;
+    -fx-text-fill: white;
+}
+
+.toast-error {
+    -fx-background-color: #B3261E;
+    -fx-text-fill: white;
+}
+
+.toast-info {
+    -fx-background-color: #1B5FA8;
+    -fx-text-fill: white;
+}
+
+/* ---- Mes 8 (rediseño visual): avisos nativos (Alert) de toda la app -- "Bienvenido" del login,
+   confirmaciones de "¿Eliminar?", avisos de "Completá tal campo", etc. Antes se veían con el
+   aspecto gris por defecto de JavaFX/el sistema operativo, sin relación con el resto del diseño
+   (ver AlertaUtil, que agrega estas clases a cualquier Alert ya existente). La ventana en sí
+   sigue siendo una ventana nativa del sistema operativo (con su barra de título) -- lo que se
+   rediseña acá es todo el contenido de adentro: ícono de color según el tipo de aviso en vez del
+   ícono genérico, texto con la misma tipografía que el resto de la app, y botones con el mismo
+   estilo que ya usan los formularios. ---- */
+.alerta-dialogo {
+    -fx-background-color: white;
+    -fx-padding: 6 4 6 4;
+}
+
+.alerta-dialogo > .header-panel {
+    -fx-background-color: white;
+    -fx-padding: 16 20 4 20;
+}
+
+.alerta-dialogo .content.label {
+    -fx-font-size: 13px;
+    -fx-text-fill: #141C19;
+    -fx-padding: 4 20 10 20;
+}
+
+.alerta-dialogo > .button-bar {
+    -fx-padding: 4 16 14 16;
+}
+
+.alerta-icono {
+    -fx-background-radius: 14;
+}
+
+.alerta-icono-azul { -fx-background-color: #EAF1FD; }
+.alerta-icono-verde { -fx-background-color: #E4F5EA; }
+.alerta-icono-ambar { -fx-background-color: #FDF1DC; }
+.alerta-icono-rojo { -fx-background-color: #FBEAE7; }
+
+.alerta-icono-glifo {
+    -fx-font-size: 20px;
+    -fx-font-weight: bold;
+}
+
+.alerta-icono-glifo-azul { -fx-text-fill: #2563EB; }
+.alerta-icono-glifo-verde { -fx-text-fill: #237A4E; }
+.alerta-icono-glifo-ambar { -fx-text-fill: #B9770E; }
+.alerta-icono-glifo-rojo { -fx-text-fill: #C2412F; }
+
+/* Mes 8 (rediseño visual), cuarta vuelta: ventana propia para los avisos simples del login (ver
+   AvisoStage) -- reemplaza al Alert de JavaFX para el cartel de "Bienvenido" (ver el javadoc de
+   esa clase para el porqué). La ventana en sí es TRANSPARENT (sin marco nativo de Windows); lo
+   único que se ve es esta tarjeta, dibujada enteramente acá, con los bordes redondeados y la
+   sombra como "flotando" sobre el escritorio. Reutiliza el mismo ícono de color que ya usaba
+   AlertaUtil. */
+.aviso-stage-caja {
+    -fx-background-color: white;
+    -fx-background-radius: 18;
+    -fx-border-color: #E6E9E7;
+    -fx-border-radius: 18;
+    -fx-border-width: 1;
+    -fx-effect: dropshadow(gaussian, rgba(16,28,22,0.28), 32, 0, 0, 12);
+}
+
+.aviso-stage-titulo {
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #141C19;
+}
+
+.aviso-stage-texto {
+    -fx-font-size: 13px;
+    -fx-text-fill: #4B5753;
+    -fx-padding: 0 0 0 58;
+}
+
+.aviso-stage-cerrar {
+    -fx-background-color: transparent;
+    -fx-text-fill: #8C9490;
+    -fx-font-size: 12px;
+    -fx-padding: 4 8 4 8;
+    -fx-background-radius: 20;
+    -fx-cursor: hand;
+}
+
+.aviso-stage-cerrar:hover {
+    -fx-background-color: #F1F3F1;
+    -fx-text-fill: #2B332F;
+}
+
+/* ---- Mes 8 (rediseño visual): tarjetas de estadísticas del Escritorio -- antes eran 4 cajas
+   de color liso (celeste/verde/amarillo/rojo) sin ícono ni ninguna reacción al mouse. Ahora son
+   tarjetas blancas con una franja de color a la izquierda, una insignia circular de color arriba
+   y un efecto de "se levanta" al pasar el mouse (ver EscritorioScreen#animarHoverTarjeta, que
+   anima el translateY -- el cambio de sombra de acá abajo, en cambio, es instantáneo al agregar
+   la clase ".tarjeta-stat-hover", como ya hacen los demás ":hover" de este archivo). ---- */
+.tarjeta-stat {
+    -fx-background-color: white;
+    -fx-background-radius: 16;
+    -fx-border-color: #E6E9E7;
+    -fx-border-radius: 16;
+    -fx-border-width: 1 1 1 4;
+    -fx-effect: dropshadow(gaussian, rgba(16,28,22,0.06), 10, 0, 0, 1);
+}
+
+.tarjeta-stat-hover {
+    -fx-effect: dropshadow(gaussian, rgba(16,28,22,0.22), 22, 0, 0, 10);
+}
+
+.tarjeta-stat-azul {
+    -fx-border-color: #E6E9E7 #E6E9E7 #E6E9E7 #2563EB;
+}
+
+.tarjeta-stat-verde {
+    -fx-border-color: #E6E9E7 #E6E9E7 #E6E9E7 #237A4E;
+}
+
+.tarjeta-stat-ambar {
+    -fx-border-color: #E6E9E7 #E6E9E7 #E6E9E7 #B9770E;
+}
+
+.tarjeta-stat-rojo {
+    -fx-border-color: #E6E9E7 #E6E9E7 #E6E9E7 #C2412F;
+}
+
+.tarjeta-stat-icono {
+    -fx-background-radius: 11;
+}
+
+.tarjeta-stat-icono-azul {
+    -fx-background-color: #EAF1FD;
+}
+
+.tarjeta-stat-icono-verde {
+    -fx-background-color: #E4F5EA;
+}
+
+.tarjeta-stat-icono-ambar {
+    -fx-background-color: #FDF1DC;
+}
+
+.tarjeta-stat-icono-rojo {
+    -fx-background-color: #FBEAE7;
+}
+
+.tarjeta-stat-icono-glifo {
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+}
+
+.tarjeta-stat-icono-glifo-azul { -fx-text-fill: #2563EB; }
+.tarjeta-stat-icono-glifo-verde { -fx-text-fill: #237A4E; }
+.tarjeta-stat-icono-glifo-ambar { -fx-text-fill: #B9770E; }
+.tarjeta-stat-icono-glifo-rojo { -fx-text-fill: #C2412F; }
+
+.tarjeta-stat-valor {
+    -fx-font-size: 28px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #101C16;
+}
+
+.tarjeta-stat-etiqueta {
+    -fx-font-size: 13px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #141C19;
+}
+
+.tarjeta-stat-sub {
+    -fx-font-size: 11.5px;
+    -fx-text-fill: #8C9490;
+}
+
+/* ---------------------------------------------------------------------------------------------
+ * Informes PDF (2026-10-08): botones tipo "pestañita" para elegir una opción entre varias
+ * (Izquierda / Centro / Derecha, Compacto / Normal / Amplio...), usados en el editor de diseño
+ * del informe (vistas.javafx.comunes.EditorDisenoPanel), y textos de ayuda.
+ * ------------------------------------------------------------------------------------------- */
+.segmento {
+    -fx-background-color: white;
+    -fx-text-fill: #3A4440;
+    -fx-border-color: #CBD3CF;
+    -fx-border-width: 1;
+    -fx-background-radius: 0;
+    -fx-border-radius: 0;
+    -fx-font-size: 12px;
+    -fx-padding: 5 12 5 12;
+    -fx-cursor: hand;
+}
+
+.segmento:hover {
+    -fx-background-color: #EEF4F0;
+}
+
+.segmento:selected {
+    -fx-background-color: #1E5C3D;
+    -fx-text-fill: white;
+    -fx-border-color: #1E5C3D;
+    -fx-font-weight: bold;
+}
+
+.segmento-primero {
+    -fx-background-radius: 10 0 0 10;
+    -fx-border-radius: 10 0 0 10;
+}
+
+.segmento-ultimo {
+    -fx-background-radius: 0 10 10 0;
+    -fx-border-radius: 0 10 10 0;
+}
+
+.ayuda-diseno {
+    -fx-font-size: 11px;
+    -fx-text-fill: #8C9490;
+}
+
+.titulo-grupo-diseno {
+    -fx-font-size: 12.5px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #1E5C3D;
+}
+
+.estado-pdf {
+    -fx-font-size: 12px;
+    -fx-text-fill: #3A4440;
+    -fx-background-color: #EEF4F0;
+    -fx-background-radius: 10;
+    -fx-padding: 8 12 8 12;
+}
+
+.estado-pdf-error {
+    -fx-font-size: 12px;
+    -fx-text-fill: #9B1C1C;
+    -fx-background-color: #FDECEC;
+    -fx-background-radius: 10;
+    -fx-padding: 8 12 8 12;
+}
+
+.enlace-accion {
+    -fx-text-fill: #1E5C3D;
+    -fx-font-size: 12px;
+    -fx-underline: true;
+    -fx-cursor: hand;
+    -fx-background-color: transparent;
+    -fx-padding: 2 4 2 4;
+}

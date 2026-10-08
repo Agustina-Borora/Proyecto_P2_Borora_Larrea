@@ -1,271 +1,82 @@
 
 package vistas.formulariosPrincipales;
-import javax.swing.JComponent;
-import javax.swing.JOptionPane;
-import vistas.menu.EventMenuSelected;
+
+import javafx.application.Platform;
+import javafx.embed.swing.JFXPanel;
+import javafx.scene.Scene;
+import javafx.stage.Stage;
+import javafx.stage.StageStyle;
+import vistas.javafx.EstiloApp;
+import vistas.javafx.shell.AppShell;
 
 /**
- * {@code JFrame} contenedor principal de la aplicación: aloja el menú lateral ({@code menu1})
- * y el área de contenido central ({@code contenedor}), y es responsable de la navegación entre
- * pantallas ({@link #navegar}) y de que la ventana (sin decoración del sistema operativo,
- * {@code undecorated}) ocupe toda la pantalla disponible y se reacomode de forma responsive a
- * su tamaño real, sea cual sea la resolución de cada equipo.
+ * Punto de entrada de la ventana principal del sistema. Antes era un {@code JFrame} con el
+ * sidebar y el contenedor central ubicados a mano en coordenadas de píxel fijas
+ * ({@code AbsoluteLayout}) -- ese diseño sólo se veía completo en la pantalla con la que se armó
+ * y se cortaba (sidebar tapado por un "rincón gris") en cualquier notebook más chica. Ahora arma
+ * un {@link AppShell} de JavaFX puro, con paneles de layout reales (VBox/BorderPane) que se
+ * acomodan solos al tamaño de cada pantalla, sea cual sea su resolución.
+ *
+ * <p>Esta clase deja de extender {@code JFrame}, pero mantiene el mismo nombre y el mismo método
+ * {@link #setVisible(boolean)} para no tener que tocar {@link Login}, que sigue haciendo
+ * {@code new Principal().setVisible(true)} después de un login exitoso.</p>
  */
-public class Principal extends javax.swing.JFrame {
+public class Principal {
 
-/**
- * Configura la ventana principal: la lleva a ocupar toda la pantalla disponible respetando la
- * barra de tareas de Windows aunque sea undecorated (ver comentario más abajo sobre {@code
- * setMaximizedBounds}), deja armado el reacomodo responsive del sidebar y el contenedor
- * ({@link #ajustarLayout()}) cada vez que cambia el tamaño de la ventana, conecta la
- * navegación del menú lateral con {@link #navegar} y abre el Escritorio como pantalla inicial.
- */
-public Principal() {
-    initComponents();
-
-    // Maximiza con MAXIMIZED_BOTH (no calcula el rectángulo a mano) para que
-    // funcione bien con cualquier resolución/escala de Windows; setMaximizedBounds()
-    // es necesario porque, al ser undecorated, maximizar taparía la barra de tareas.
-    java.awt.GraphicsConfiguration configPantalla = getGraphicsConfiguration();
-    if (configPantalla == null) {
-        configPantalla = java.awt.GraphicsEnvironment.getLocalGraphicsEnvironment()
-                .getDefaultScreenDevice().getDefaultConfiguration();
-    }
-    java.awt.Rectangle limitesPantalla = configPantalla.getBounds();
-    java.awt.Insets bordesPantalla = java.awt.Toolkit.getDefaultToolkit().getScreenInsets(configPantalla);
-    java.awt.Rectangle limitesUsables = new java.awt.Rectangle(
-            limitesPantalla.x + bordesPantalla.left,
-            limitesPantalla.y + bordesPantalla.top,
-            limitesPantalla.width - bordesPantalla.left - bordesPantalla.right,
-            limitesPantalla.height - bordesPantalla.top - bordesPantalla.bottom);
-
-    if (java.awt.Toolkit.getDefaultToolkit().isFrameStateSupported(java.awt.Frame.MAXIMIZED_BOTH)) {
-        setMaximizedBounds(limitesUsables);
-        setExtendedState(java.awt.Frame.MAXIMIZED_BOTH);
-    } else {
-        this.setBounds(limitesUsables);
-    }
-
-    panelBorder1.addComponentListener(new java.awt.event.ComponentAdapter() {
-        @Override
-        public void componentResized(java.awt.event.ComponentEvent e) {
-            ajustarLayout();
-        }
-    });
-    ajustarLayout();
-
-    // Conectar el menú con la navegación
-    menu1.addEventMenuSelected(new EventMenuSelected() {
-        @Override
-        public void selected(String id) {
-            navegar(id);
-        }
-    });
-
-    // Carga Escritorio por defecto y marca el menú
-    navegar("4_1");
-}
+    private Stage stage;
 
     /**
-     * Recalcula el tamaño de menu1 (sidebar) y contenedor dentro de panelBorder1 para que ocupen
-     * todo el alto/ancho disponible, en vez de quedarse con las medidas fijas (870px) con las que
-     * se diseñó la pantalla.
+     * Fuerza la inicialización del toolkit de JavaFX (si todavía no arrancó) sin necesitar
+     * {@code Application.launch()}: crear un {@code JFXPanel}, aunque no se lo use, alcanza para
+     * que {@link Platform#runLater} ya funcione después de esto. Es el mismo truco que ya usa
+     * {@link vistas.javafx.JavaFxHostPanel}.
      */
-    private void ajustarLayout() {
-        int ancho = panelBorder1.getWidth();
-        int alto = panelBorder1.getHeight();
+    public Principal() {
+        new JFXPanel();
+    }
 
-        if (ancho <= 0 || alto <= 0) {
+    /**
+     * Muestra (o esconde) la ventana principal. Arma el {@link AppShell} y lo despliega en un
+     * {@code Stage} sin decoración del sistema operativo (mismo look que tenía el JFrame
+     * {@code undecorated} original) pero maximizado con {@code Stage.setMaximized(true)}, que a
+     * diferencia de {@code JFrame.setExtendedState(MAXIMIZED_BOTH)} respeta la barra de tareas de
+     * Windows de forma confiable en cualquier resolución.
+     */
+    public void setVisible(boolean visible) {
+        if (!visible) {
+            if (stage != null) {
+                Platform.runLater(() -> stage.hide());
+            }
             return;
         }
 
-        panelBorder1.remove(menu1);
-        panelBorder1.add(menu1,
-                new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, -1, alto));
+        Platform.runLater(() -> {
+            AppShell shell = new AppShell();
+            shell.setAlCerrarSesion(() -> {
+                // Ya estamos en el hilo de JavaFX (esto se dispara desde el Alert de
+                // confirmación de AppShell), así que cerrar el Stage es directo; abrir el
+                // Login (Swing) sí hay que despacharlo al Event Dispatch Thread.
+                stage.close();
+                javax.swing.SwingUtilities.invokeLater(() -> new Login().setVisible(true));
+            });
 
-        panelBorder1.remove(contenedor);
-        panelBorder1.add(contenedor,
-                new org.netbeans.lib.awtextra.AbsoluteConstraints(280, 0, ancho - 280, alto));
-
-        panelBorder1.revalidate();
-        panelBorder1.repaint();
+            stage = new Stage(StageStyle.UNDECORATED);
+            Scene escena = new Scene(shell.construir());
+            escena.getStylesheets().add(EstiloApp.hojaDeEstilos());
+            stage.setScene(escena);
+            stage.setResizable(true);
+            stage.setMaximized(true);
+            stage.show();
+        });
     }
-
-    /**
-     * Reemplaza el contenido de {@code contenedor} por el panel recibido, quitando lo que hubiera
-     * antes.
-     */
-    private void setForm(JComponent com) {
-        contenedor.removeAll();
-        contenedor.setLayout(new java.awt.BorderLayout());
-        contenedor.add(com, java.awt.BorderLayout.CENTER);
-        contenedor.revalidate();
-        contenedor.repaint();
-    }
-
-    /**
-     * Decide qué pantalla mostrar en el contenedor central según el id de menú elegido en el
-     * sidebar ({@code menu1}).
-     */
-    private void navegar(String id) {
-
-        switch (id) {
-
-            case "4_1": {
-                Escritorio pantallaEscritorio = new Escritorio();
-                pantallaEscritorio.addCargarResultadosListener(new Escritorio.CargarResultadosListener() {
-                    @Override
-                    public void onCargarResultados() {
-                        navegar("4");
-                    }
-                });
-                setForm(pantallaEscritorio);
-                break;
-            }
-
-            case "5_1":
-                setForm(new Pacientes());
-                break;
-
-            case "2":
-                setForm(new Registros());
-                break;
-
-            case "3":
-                setForm(new NuevoAnalisis());
-                break;
-
-            case "4": {
-                RegistrarResultados pantallaRegistrar = new RegistrarResultados();
-                pantallaRegistrar.addOrdenParaResultadosListener(new RegistrarResultados.OrdenParaResultadosListener() {
-                    @Override
-                    public void onOrdenSeleccionada(modelo.Paciente paciente, modelo.OrdenResumen orden) {
-                        vistas.registrarResultados.cargarReultados pantallaCarga = new vistas.registrarResultados.cargarReultados();
-                        pantallaCarga.cargarDatosPaciente(paciente, orden.getFecha());
-                        pantallaCarga.cargarExamen(orden.getIdPedidoAnalisis(), orden.getIdAnalisisTipo(),
-                                orden.getExamen(), paciente.getIdSexo());
-                        pantallaCarga.addCancelarListener(new vistas.registrarResultados.cargarReultados.CancelarListener() {
-                            @Override
-                            public void onCancelar() {
-                                navegar("4");
-                            }
-                        });
-                        pantallaCarga.addGuardarListener(new vistas.registrarResultados.cargarReultados.GuardarListener() {
-                            @Override
-                            public void onGuardado() {
-                                navegar("4");
-                            }
-                        });
-                        setForm(pantallaCarga);
-                    }
-                });
-                setForm(pantallaRegistrar);
-                break;
-            }
-
-            case "5":
-                setForm(new CatalogoExamenes());
-                break;
-
-            case "1":
-                setForm(new Cotizacion());
-                break;
-
-            case "6":
-                setForm(new ObraSocial());
-                break;
-
-            case "7":
-                setForm(new Usuarios());
-                break;
-
-            case "8":
-                setForm(new Estadisticas());
-                break;
-
-            case "9":
-                setForm(new Configuracion());
-                break;
-
-            case "10":
-                cerrarSesion();
-                break;
-        }
-    }
-
-    /**
-     * Pide confirmación y, si el usuario acepta, cierra esta ventana y abre la pantalla de {@link
-     * Login} para volver a autenticarse.
-     */
-    private void cerrarSesion() {
-        int opcion = JOptionPane.showConfirmDialog(
-            this,
-            "¿Deseas cerrar sesión?",
-            "Cerrar Sesión",
-            JOptionPane.YES_NO_OPTION
-        );
-
-        if (opcion == JOptionPane.YES_OPTION) {
-            this.dispose();
-            new Login().setVisible(true);
-        }
-    }
-    @SuppressWarnings("unchecked")
-    // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
-    private void initComponents() {
-
-        panelBorder1 = new vistas.panels.PanelBorder();
-        menu1 = new vistas.panels.Menu();
-        contenedor = new javax.swing.JPanel();
-
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setBackground(new java.awt.Color(255, 255, 255));
-        setUndecorated(true);
-
-        panelBorder1.setBackground(new java.awt.Color(246, 255, 249));
-        panelBorder1.setLayout(null);
-        panelBorder1.add(menu1);
-        menu1.setBounds(0, 0, 278, 831);
-
-        contenedor.setBackground(new java.awt.Color(246, 255, 249));
-        contenedor.setOpaque(false);
-        contenedor.setLayout(new java.awt.BorderLayout());
-        panelBorder1.add(contenedor);
-        contenedor.setBounds(280, 0, 1030, 890);
-
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
-        getContentPane().setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(panelBorder1, javax.swing.GroupLayout.PREFERRED_SIZE, 1314, javax.swing.GroupLayout.PREFERRED_SIZE)
-        );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(panelBorder1, javax.swing.GroupLayout.PREFERRED_SIZE, 851, javax.swing.GroupLayout.PREFERRED_SIZE)
-        );
-
-        pack();
-        setLocationRelativeTo(null);
-    }// </editor-fold>//GEN-END:initComponents
 
     public static void main(String args[]) {
-     try {
-        com.formdev.flatlaf.FlatLightLaf.setup();
-    } catch (Exception ex) {
-        System.err.println("Error al inicializar FlatLaf: " + ex.getMessage());
-    }
-
-    // 2. Iniciar la interfaz gráfica
-    java.awt.EventQueue.invokeLater(new Runnable() {
-        public void run() {
-            new Principal().setVisible(true);
+        try {
+            com.formdev.flatlaf.FlatLightLaf.setup();
+        } catch (Exception ex) {
+            System.err.println("Error al inicializar FlatLaf: " + ex.getMessage());
         }
-    });
-    }
 
-    // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JPanel contenedor;
-    private vistas.panels.Menu menu1;
-    private vistas.panels.PanelBorder panelBorder1;
-    // End of variables declaration//GEN-END:variables
+        java.awt.EventQueue.invokeLater(() -> new Principal().setVisible(true));
+    }
 }

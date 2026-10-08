@@ -3,6 +3,7 @@ package controlador;
 import java.awt.Component;
 import java.util.List;
 import javax.swing.JOptionPane;
+import modelo.DatosCobertura;
 import modelo.Paciente;
 import modelo.PedidoCreado;
 import modelo.Prestacion;
@@ -55,10 +56,29 @@ public final class NuevoAnalisisController {
      * @param medicoDerivante          nombre tipeado en "Medico Derivante" (puede venir vacío).
      * @param prestaciones             análisis elegidos en Solicitud de Análisis.
      * @return el resultado si se generó la orden, o null si falló (ya se mostró el cartel correspondiente).
+     * @deprecated queda solo por compatibilidad con la pantalla vieja de Swing
+     *             ({@link vistas.formulariosPrincipales.NuevoAnalisis}), que no captura
+     *             cobertura; no guarda nada en `pagos` ni el total del pedido. Usar la sobrecarga
+     *             con {@link DatosCobertura} desde cualquier pantalla nueva.
      */
+    @Deprecated
     public static ResultadoOrden generarOrden(Component padre, boolean pacienteExistente,
             Integer idPacienteExistente, boolean datosPacienteCambiaron, Paciente datosPaciente,
             String medicoDerivante, List<Prestacion> prestaciones) {
+        return generarOrden(padre, pacienteExistente, idPacienteExistente, datosPacienteCambiaron,
+                datosPaciente, medicoDerivante, prestaciones, null);
+    }
+
+    /**
+     * Igual que la sobrecarga de arriba, pero además guarda la cobertura elegida (tipo, obra
+     * social, plan, nro. de afiliado, método de pago y -- si es Mixto -- el monto en efectivo)
+     * en `pagos`, y el total calculado en pantalla en `pedidos.total_pedido`. Si
+     * {@code cobertura} viene null no se guarda ninguna de las dos cosas (mismo comportamiento
+     * que antes de esta migración).
+     */
+    public static ResultadoOrden generarOrden(Component padre, boolean pacienteExistente,
+            Integer idPacienteExistente, boolean datosPacienteCambiaron, Paciente datosPaciente,
+            String medicoDerivante, List<Prestacion> prestaciones, DatosCobertura cobertura) {
 
         if (modelo.Sesion.idUsuario <= 0) {
             JOptionPane.showMessageDialog(padre,
@@ -101,6 +121,16 @@ public final class NuevoAnalisisController {
             for (Prestacion prestacion : prestaciones) {
                 Integer idAnalisisTipo = dao.AnalisisTipoDAO.obtenerOCrearDesdeNomenclador(con, prestacion);
                 if (idAnalisisTipo == null || !dao.PedidoDAO.agregarAnalisis(con, pedido.getIdPedido(), idAnalisisTipo)) {
+                    throw new OperacionCancelada();
+                }
+            }
+
+            if (cobertura != null) {
+                if (cobertura.getTotal() != null
+                        && !dao.PedidoDAO.actualizarTotal(con, pedido.getIdPedido(), cobertura.getTotal())) {
+                    throw new OperacionCancelada();
+                }
+                if (!dao.PagoDAO.crearPago(con, pedido.getIdPedido(), cobertura)) {
                     throw new OperacionCancelada();
                 }
             }

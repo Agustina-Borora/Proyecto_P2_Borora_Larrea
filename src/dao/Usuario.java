@@ -14,49 +14,82 @@ public class Usuario {
      * Valida las credenciales de un usuario e inicia su sesión global si son correctas.
      *
      * @param conexion Objeto de conexión activo a la base de datos.
-     * @param email Correo electrónico del usuario.
+     * @param identificador Email o nombre de pila del usuario (ver más abajo).
      * @param password Contraseña del usuario.
      * @return true si el usuario existe, sus credenciales coinciden y está activo; false de lo contrario.
      * @throws SQLException Si ocurre un error de consulta a la base de datos.
      */
-    public static boolean ingresar(Connection conexion, String email, String password) throws SQLException {
+    public static boolean ingresar(Connection conexion, String identificador, String password) throws SQLException {
         boolean existe = false;
 
         // OJO: ya no se filtra por password en el WHERE. La contraseña
         // ahora se guarda hasheada (ver controlador.PasswordHasher), así
         // que no hay forma de compararla dentro del SQL: hay que traer el
         // hash guardado y compararlo en Java con PasswordHasher.verificar().
+        //
+        // Mes 8: ahora "identificador" puede ser el email de siempre O el nombre de pila (pedido
+        // de la clienta -- "cansa que a cada rato tenga que ingresar el gmail"), sin distinguir
+        // mayúsculas/minúsculas. El email sigue siendo único por usuario, pero el nombre de pila
+        // no (puede haber dos "Zaira" activas) -- por eso, si el nombre ingresado coincide con más
+        // de un usuario activo, NO se entra con ninguno de los dos (ver el chequeo de ambigüedad
+        // más abajo): equivocarse de cuenta por un nombre repetido sería un problema de seguridad,
+        // no sólo de comodidad. En ese caso puntual, esa persona sigue necesitando el email.
         String sql = "SELECT u.id_usuario, u.nombre_usuario, u.apellido_usuario, u.password_usuario, r.nombre_rol " +
                      "FROM usuarios u " +
                      "INNER JOIN roles r ON u.id_rol = r.id_rol " +
-                     "WHERE u.email_usuario = ? AND u.activo_usuario = 1";
+                     "WHERE (u.email_usuario = ? OR LOWER(u.nombre_usuario) = LOWER(?)) AND u.activo_usuario = 1";
 
         try (PreparedStatement ps = conexion.prepareStatement(sql)) {
-            ps.setString(1, email);
+            ps.setString(1, identificador);
+            ps.setString(2, identificador);
 
             try (ResultSet rs = ps.executeQuery()) {
+                if (!rs.next()) {
+                    // Auditoría: no se guarda la contraseña tipeada, sólo el identificador, para
+                    // poder ver después intentos repetidos de entrar con un usuario que no existe.
+                    AuditoriaDAO.registrar(conexion, null, "LOGIN_FALLIDO", "usuarios", null,
+                            "Intento de inicio de sesión fallido con \"" + identificador
+                                    + "\" (no existe o está inactivo)");
+                    return false;
+                }
+
+                int idUsuario = rs.getInt("id_usuario");
+                String valorGuardado = rs.getString("password_usuario");
+                String nombreUsuario = rs.getString("nombre_usuario");
+                String apellidoUsuario = rs.getString("apellido_usuario");
+                String nombreRol = rs.getString("nombre_rol");
+
                 if (rs.next()) {
-                    int idUsuario = rs.getInt("id_usuario");
-                    String valorGuardado = rs.getString("password_usuario");
-                    boolean coincide;
+                    // Ambiguo: más de un usuario activo coincide con el nombre ingresado.
+                    AuditoriaDAO.registrar(conexion, null, "LOGIN_FALLIDO", "usuarios", null,
+                            "Intento de inicio de sesión fallido con \"" + identificador
+                                    + "\" (nombre ambiguo, coincide con más de un usuario)");
+                    return false;
+                }
 
-                    if (controlador.PasswordHasher.esFormatoValido(valorGuardado)) {
-                        coincide = controlador.PasswordHasher.verificar(password, valorGuardado);
-                    } else {
-                        coincide = valorGuardado != null && valorGuardado.equals(password);
-                        if (coincide) {
-                            actualizarPassword(conexion, idUsuario, controlador.PasswordHasher.hash(password));
-                        }
-                    }
-
+                boolean coincide;
+                if (controlador.PasswordHasher.esFormatoValido(valorGuardado)) {
+                    coincide = controlador.PasswordHasher.verificar(password, valorGuardado);
+                } else {
+                    coincide = valorGuardado != null && valorGuardado.equals(password);
                     if (coincide) {
-                        Sesion.idUsuario = idUsuario;
-                        Sesion.nombre = rs.getString("nombre_usuario");
-                        Sesion.apellido = rs.getString("apellido_usuario");
-                        Sesion.rol = rs.getString("nombre_rol");
-
-                        existe = true;
+                        actualizarPassword(conexion, idUsuario, controlador.PasswordHasher.hash(password));
                     }
+                }
+
+                if (coincide) {
+                    Sesion.idUsuario = idUsuario;
+                    Sesion.nombre = nombreUsuario;
+                    Sesion.apellido = apellidoUsuario;
+                    Sesion.rol = nombreRol;
+
+                    existe = true;
+                    AuditoriaDAO.registrar(conexion, idUsuario, "LOGIN", "usuarios", idUsuario,
+                            "Inicio de sesión: " + nombreUsuario + " " + apellidoUsuario);
+                } else {
+                    AuditoriaDAO.registrar(conexion, null, "LOGIN_FALLIDO", "usuarios", idUsuario,
+                            "Intento de inicio de sesión fallido con \"" + identificador
+                                    + "\" (contraseña incorrecta)");
                 }
             }
         } catch (SQLException e) {

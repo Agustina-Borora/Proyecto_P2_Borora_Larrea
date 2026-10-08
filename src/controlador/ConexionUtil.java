@@ -29,8 +29,7 @@ public final class ConexionUtil {
     public static <T> T ejecutar(Component padre, String tituloError, Operacion<T> operacion, T valorPorError) {
         Connection con = Conexion.conectar();
         if (con == null) {
-            JOptionPane.showMessageDialog(padre, "No se pudo conectar a la base de datos.",
-                    "Error de Conexión", JOptionPane.ERROR_MESSAGE);
+            mostrarError(padre, "No se pudo conectar a la base de datos.", "Error de Conexión");
             return valorPorError;
         }
         try {
@@ -38,8 +37,7 @@ public final class ConexionUtil {
         } catch (OperacionCancelada e) {
             return valorPorError;
         } catch (SQLException e) {
-            JOptionPane.showMessageDialog(padre, tituloError + ": " + e.getMessage(),
-                    "Error", JOptionPane.ERROR_MESSAGE);
+            mostrarError(padre, tituloError + ": " + e.getMessage(), "Error");
             return valorPorError;
         } finally {
             cerrar(con);
@@ -54,8 +52,7 @@ public final class ConexionUtil {
     public static <T> T ejecutarTransaccion(Component padre, String tituloError, Operacion<T> operacion, T valorPorError) {
         Connection con = Conexion.conectar();
         if (con == null) {
-            JOptionPane.showMessageDialog(padre, "No se pudo conectar a la base de datos.",
-                    "Error de Conexión", JOptionPane.ERROR_MESSAGE);
+            mostrarError(padre, "No se pudo conectar a la base de datos.", "Error de Conexión");
             return valorPorError;
         }
         try {
@@ -68,8 +65,7 @@ public final class ConexionUtil {
             return valorPorError;
         } catch (SQLException e) {
             rollback(con);
-            JOptionPane.showMessageDialog(padre, tituloError + ": " + e.getMessage(),
-                    "Error", JOptionPane.ERROR_MESSAGE);
+            mostrarError(padre, tituloError + ": " + e.getMessage(), "Error");
             return valorPorError;
         } finally {
             try {
@@ -80,6 +76,21 @@ public final class ConexionUtil {
                 // nada para hacer si falla al restaurar autoCommit
             }
             cerrar(con);
+        }
+    }
+
+    /**
+     * Muestra el cartel de error en el hilo de Swing. Si esta operación se está ejecutando en un
+     * hilo en segundo plano, el cartel se manda al hilo de Swing en vez de abrirse ahí mismo
+     * (abrir un {@code JOptionPane} desde otro hilo puede dejar la aplicación tildada).
+     */
+    private static void mostrarError(Component padre, String mensaje, String titulo) {
+        Runnable mostrar = () -> JOptionPane.showMessageDialog(padre, mensaje, titulo, JOptionPane.ERROR_MESSAGE);
+        if (javax.swing.SwingUtilities.isEventDispatchThread()) {
+            mostrar.run();
+        } else {
+            System.err.println(titulo + ": " + mensaje);
+            javax.swing.SwingUtilities.invokeLater(mostrar);
         }
     }
 

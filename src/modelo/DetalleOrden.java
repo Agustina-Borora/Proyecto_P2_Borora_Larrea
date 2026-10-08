@@ -27,6 +27,9 @@ public class DetalleOrden {
     private String estadoAnalisisRaw;
     private int idPedidoAnalisis;
     private int idAnalisisTipo;
+    private int idPedido;
+    private int idPaciente;
+    private Integer idMedico;
 
     public String getNumeroOrden() {
         return numeroOrden;
@@ -104,8 +107,7 @@ public class DetalleOrden {
     }
 
     /**
-     * Observación del análisis. El esquema actual no tiene una columna para esto, así que hoy
-     * siempre llega null; queda el campo listo para cuando se agregue.
+     * Observación del análisis (pedido_analisis.observaciones), o null si no se cargó ninguna.
      */
     public String getObservacion() {
         return observacion;
@@ -164,5 +166,41 @@ public class DetalleOrden {
 
     public void setIdAnalisisTipo(int idAnalisisTipo) {
         this.idAnalisisTipo = idAnalisisTipo;
+    }
+
+    /**
+     * Id del pedido dueño de este análisis (pedidos.id_pedido) -- lo necesitan "Editar Orden" y
+     * "Enviar Resultados" para guardar cambios sobre el pedido entero, no solo sobre esta fila de
+     * pedido_analisis.
+     */
+    public int getIdPedido() {
+        return idPedido;
+    }
+
+    public void setIdPedido(int idPedido) {
+        this.idPedido = idPedido;
+    }
+
+    /**
+     * Id del paciente dueño de la orden (pacientes.id_paciente) -- lo necesita "Editar Orden" para
+     * guardar los cambios de nombre/DNI/celular/email.
+     */
+    public int getIdPaciente() {
+        return idPaciente;
+    }
+
+    public void setIdPaciente(int idPaciente) {
+        this.idPaciente = idPaciente;
+    }
+
+    /**
+     * Id del médico derivante del pedido (medicos.id_medico), o null si no tiene uno cargado.
+     */
+    public Integer getIdMedico() {
+        return idMedico;
+    }
+
+    public void setIdMedico(Integer idMedico) {
+        this.idMedico = idMedico;
     }
 }

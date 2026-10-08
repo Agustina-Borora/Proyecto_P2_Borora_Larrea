@@ -37,6 +37,15 @@ public final class PacienteController {
     }
 
     /**
+     * Guarda los cambios hechos a un paciente ya existente (ver {@code vistas.pacientes.EditarPaciente}).
+     */
+    public static boolean actualizar(Component padre, Paciente paciente) {
+        return ConexionUtil.ejecutar(padre, "Error al actualizar el paciente",
+                con -> dao.PacienteDAO.actualizar(con, paciente),
+                false);
+    }
+
+    /**
      * El examen más reciente del paciente (o null si nunca tuvo ninguno), para la pestaña
      * "Último Examen" del detalle de paciente.
      */

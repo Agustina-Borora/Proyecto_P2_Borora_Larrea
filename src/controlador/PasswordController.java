@@ -6,11 +6,22 @@ import java.awt.Component;
 import java.security.SecureRandom;
 import java.sql.Timestamp;
 import javax.mail.MessagingException;
-import javax.swing.JOptionPane;
 
 /**
  * Orquesta el flujo de "olvidé mi contraseña": generar y mandar el código de verificación por
  * email, validarlo, y guardar la contraseña nueva ya hasheada.
+ *
+ * <p>Esta clase ya no muestra sus propios {@code JOptionPane} (salvo los que siguen viniendo de
+ * {@link ConexionUtil#ejecutar} para errores de base de datos, que es un caso aparte): sólo hace
+ * el trabajo de datos y devuelve el resultado para que quien la llama -- siempre pantallas
+ * JavaFX, ver {@link vistas.javafx.login.RecuperarContrasenaStage} y {@link
+ * vistas.javafx.usuarios.UsuarioFormDialog} -- decida cómo mostrarlo. Antes del 2026-10-01 esta
+ * clase mostraba esos mensajes ella misma con {@code JOptionPane.showMessageDialog(padre, ...)}
+ * con {@code padre == null}; en una app que ya es enteramente JavaFX (sin ningún {@code JFrame}
+ * visible) ese diálogo de Swing no tiene ninguna ventana a la que anclarse, así que terminaba
+ * abriéndose sin foco e invisible para la persona -- y como {@code PuenteEDT.ejecutar} espera a
+ * que el diálogo se cierre, todo quedaba trabado esperando un diálogo que nadie podía ver ni
+ * cerrar (el síntoma: "me llega el código pero no pasa nada").
  */
 public final class PasswordController {
 
@@ -26,8 +37,8 @@ public final class PasswordController {
     /**
      * Resultado de {@link #solicitarCodigo}: distingue si el código se mandó, si el email no
      * corresponde a ningún usuario activo, o si hubo un error de sistema (base de datos o envío de
-     * email), para que {@link vistas.recuperarContrasena.RecuperarContrasenaFrame} sepa si avanzar de pantalla, volver
-     * al login o dejar reintentar en la misma pantalla.
+     * email), para que {@link vistas.javafx.login.RecuperarContrasenaStage} sepa si avanzar de
+     * pantalla, volver al login o dejar reintentar en la misma pantalla.
      */
     public static final class ResultadoSolicitud {
 
@@ -37,10 +48,12 @@ public final class PasswordController {
 
         private final Estado estado;
         private final Integer idUsuario;
+        private final String mensajeError;
 
-        private ResultadoSolicitud(Estado estado, Integer idUsuario) {
+        private ResultadoSolicitud(Estado estado, Integer idUsuario, String mensajeError) {
             this.estado = estado;
             this.idUsuario = idUsuario;
+            this.mensajeError = mensajeError;
         }
 
         public boolean fueEnviado() {
@@ -51,11 +64,22 @@ public final class PasswordController {
             return estado == Estado.EMAIL_NO_REGISTRADO;
         }
 
+        public boolean hayError() {
+            return estado == Estado.ERROR;
+        }
+
         /**
          * Válido solo cuando {@link #fueEnviado()} devuelve {@code true}.
          */
         public int getIdUsuario() {
             return idUsuario;
+        }
+
+        /**
+         * Detalle para mostrarle a la persona cuando {@link #hayError()} devuelve {@code true}.
+         */
+        public String getMensajeError() {
+            return mensajeError;
         }
     }
 
@@ -78,11 +102,7 @@ public final class PasswordController {
                 }, null);
 
         if (idUsuario == null) {
-            JOptionPane.showMessageDialog(padre,
-                    "Ese email no está registrado en el sistema. Deberás "
-                    + "comunicarte con la bioquímica a cargo para verificar tu cuenta.",
-                    "Email no registrado", JOptionPane.WARNING_MESSAGE);
-            return new ResultadoSolicitud(ResultadoSolicitud.Estado.EMAIL_NO_REGISTRADO, null);
+            return new ResultadoSolicitud(ResultadoSolicitud.Estado.EMAIL_NO_REGISTRADO, null, null);
         }
 
         String codigo = generarCodigo();
@@ -95,7 +115,8 @@ public final class PasswordController {
                 }, false);
 
         if (guardado == null || !guardado) {
-            return new ResultadoSolicitud(ResultadoSolicitud.Estado.ERROR, null);
+            return new ResultadoSolicitud(ResultadoSolicitud.Estado.ERROR, null,
+                    "No se pudo guardar el código de verificación.");
         }
 
         try {
@@ -104,20 +125,17 @@ public final class PasswordController {
                     + "Vence en " + MINUTOS_VALIDEZ_CODIGO + " minutos. "
                     + "Si no pediste este código, podés ignorar este mensaje.");
         } catch (MessagingException | java.io.IOException e) {
-            JOptionPane.showMessageDialog(padre,
-                    "No se pudo enviar el email: " + e.getMessage(),
-                    "Error al enviar", JOptionPane.ERROR_MESSAGE);
-            return new ResultadoSolicitud(ResultadoSolicitud.Estado.ERROR, null);
+            return new ResultadoSolicitud(ResultadoSolicitud.Estado.ERROR, null,
+                    "No se pudo enviar el email: " + e.getMessage());
         }
 
-        JOptionPane.showMessageDialog(padre,
-                "Te enviamos un código de verificación a tu email.",
-                "Código enviado", JOptionPane.INFORMATION_MESSAGE);
-        return new ResultadoSolicitud(ResultadoSolicitud.Estado.ENVIADO, idUsuario);
+        return new ResultadoSolicitud(ResultadoSolicitud.Estado.ENVIADO, idUsuario, null);
     }
 
     /**
-     * Verifica el código de 6 dígitos ingresado contra el último vigente del usuario.
+     * Verifica el código de 6 dígitos ingresado contra el último vigente del usuario. Si da
+     * {@code false} (código incorrecto, vencido, o ya usado), la pantalla que llama es la que
+     * decide cómo avisarlo.
      */
     public static boolean verificarCodigo(Component padre, int idUsuario, String codigoIngresado) {
         Boolean valido = ConexionUtil.ejecutar(padre, "Error de base de datos", con -> {
@@ -132,23 +150,24 @@ public final class PasswordController {
             return coincide;
         }, false);
 
-        boolean esValido = valido != null && valido;
-        if (!esValido) {
-            JOptionPane.showMessageDialog(padre,
-                    "El código es incorrecto o venció. Pedí uno nuevo.",
-                    "Código inválido", JOptionPane.WARNING_MESSAGE);
-        }
-        return esValido;
+        return valido != null && valido;
     }
 
     /**
-     * Valida el largo mínimo y guarda la nueva contraseña (hasheada) para el usuario.
+     * Cuánto tiene que medir como mínimo una contraseña nueva; expuesto para que las pantallas
+     * puedan validar el largo ellas mismas antes de llamar a {@link #cambiarPassword}.
+     */
+    public static int getLargoMinimoPassword() {
+        return LARGO_MINIMO_PASSWORD;
+    }
+
+    /**
+     * Guarda la nueva contraseña (hasheada) para el usuario. Devuelve {@code false} si el largo
+     * mínimo no se cumple o si falló el guardado; quien llama decide cómo avisarlo (ver {@link
+     * #getLargoMinimoPassword()} para validar el largo de entrada antes de llegar hasta acá).
      */
     public static boolean cambiarPassword(Component padre, int idUsuario, String nuevaPassword) {
         if (nuevaPassword == null || nuevaPassword.length() < LARGO_MINIMO_PASSWORD) {
-            JOptionPane.showMessageDialog(padre,
-                    "La contraseña debe tener al menos " + LARGO_MINIMO_PASSWORD + " caracteres.",
-                    "Contraseña muy corta", JOptionPane.WARNING_MESSAGE);
             return false;
         }
 
@@ -157,11 +176,7 @@ public final class PasswordController {
             return true;
         }, false);
 
-        if (ok != null && ok) {
-            JOptionPane.showMessageDialog(padre, "Contraseña actualizada correctamente.");
-            return true;
-        }
-        return false;
+        return ok != null && ok;
     }
 
     /**
